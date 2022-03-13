@@ -1,4 +1,9 @@
-# gra_design_fronted
+
+# 考研信息查询网站-前端
+
+- 本项目基于 Vue 2.x
+
+<!-- # gra_design_fronted
 
 ## Project setup
 ```
@@ -21,4 +26,4 @@ npm run lint
 ```
 
 ### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+See [Configuration Reference](https://cli.vuejs.org/config/). -->
