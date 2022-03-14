@@ -5,7 +5,6 @@
       <div class="condition">
         <!-- 条件卡片 -->
         <a-card title="资料分享 >" style="width: 100%">
-          <a slot="extra" href="#">more</a>
           <a-card style="width: 100%">
             <!-- 搜索框 -->
             <div style="width: 500px">
@@ -37,6 +36,16 @@
           </a-card>
         </a-card>
       </div>
+      <!-- 资料表格 -->
+      <div class="materialsTable">
+        <a-table :columns="columns" :data-source="schoolData">
+          <span slot="customTitle"><a-icon type="crown" />资料名称</span>
+          <!-- <span slot="type"> </span>
+          <span slot="uploadTime"> </span>
+          <span slot="uploadUser"> </span>
+          <span slot="link"> </span> -->
+        </a-table>
+      </div>
     </div>
   </div>
 </template>
@@ -57,6 +66,71 @@
     '其他',
   ]
   const defaultCheckedList = ['数学', '408']
+  // 资料表格配置
+  // 筛选后学校表格
+  const columns = [
+    {
+      dataIndex: 'matName',
+      key: 'matName',
+      slots: { title: 'customTitle' },
+      scopedSlots: { customRender: 'matName' },
+    },
+    {
+      title: '文件类型',
+      dataIndex: 'type',
+      key: 'type',
+    },
+    {
+      title: '所属学校',
+      dataIndex: 'schName',
+      key: 'schName',
+    },
+    {
+      title: '上传用户',
+      key: 'uploadUser',
+      dataIndex: 'uploadUser',
+    },
+    {
+      title: '上传时间',
+      key: 'uploadTime',
+      dataIndex: 'uploadTime',
+    },
+    {
+      title: '下载链接',
+      dataIndex: 'link',
+      key: 'link',
+    },
+  ]
+  // 筛选后学校表格数据
+  const schoolData = [
+    {
+      key: '1',
+      matName: '2021-408真题.pdf',
+      type: 'pdf',
+      schName: '北京大学',
+      uploadTime: '2022-03-21',
+      uploadUser: 'ztyzhou',
+      link:'https://ztyzhou.com'
+    },
+    {
+      key: '2',
+      matName: '2021-四川农业大学数据结构.pdf',
+      type: 'pdf',
+      schName: '四川农业大学',
+      uploadTime: '2022-03-21',
+      uploadUser: 'ztyzhou',
+      link:'https://ztyzhou.com'
+    },
+    {
+      key: '3',
+      matName: '2021-新疆大学数据结构.pdf',
+      type: 'pdf',
+      schName: '新疆大学',
+      uploadTime: '2022-03-21',
+      uploadUser: 'ztyzhou',
+      link:'https://ztyzhou.com'
+    },
+  ]
   export default {
     components: { secNavbar },
     data() {
@@ -65,6 +139,8 @@
         indeterminate: true,
         checkAll: false,
         plainOptions,
+        columns,
+        schoolData,
       }
     },
     methods: {
@@ -94,5 +170,9 @@
   .condition {
     margin-top: 30px;
     /* border: 1px solid #eceaea; */
+  }
+  .materialsTable {
+    margin-top: 30px;
+    border: 1px solid #eceaea;
   }
 </style>
