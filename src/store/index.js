@@ -20,7 +20,8 @@ const mutations = {
 }
 //准备state对象——保存具体的数据
 const state = {
-  navbarId: 1
+  navbarId: 1,
+  isLogin: true
 }
 
 //创建并暴露store
