@@ -39,7 +39,16 @@
       <!-- 资料表格 -->
       <div class="materialsTable">
         <a-table :columns="columns" :data-source="schoolData">
-          <span slot="customTitle"><a-icon type="crown" />资料名称</span>
+          <span slot="customTitle"><a-icon type="crown" />资料名称 </span>
+          <span slot="matName" slot-scope="text, record">
+            <a :href="record.link">{{ record.matName }}</a>
+          </span>
+          <span slot="link" slot-scope="text, record">
+            <a :href="record.link">点击下载</a>
+          </span>
+          <span slot="type" slot-scope="text, record">
+            <a-tag color="#2db7f5">{{ record.size + ' ' + record.type }} </a-tag>
+          </span>
           <!-- <span slot="type"> </span>
           <span slot="uploadTime"> </span>
           <span slot="uploadUser"> </span>
@@ -76,9 +85,10 @@
       scopedSlots: { customRender: 'matName' },
     },
     {
-      title: '文件类型',
+      title: '文件描述',
       dataIndex: 'type',
       key: 'type',
+      scopedSlots: { customRender: 'type' },
     },
     {
       title: '所属学校',
@@ -97,8 +107,8 @@
     },
     {
       title: '下载链接',
-      dataIndex: 'link',
       key: 'link',
+      scopedSlots: { customRender: 'link' },
     },
   ]
   // 筛选后学校表格数据
@@ -107,28 +117,31 @@
       key: '1',
       matName: '2021-408真题.pdf',
       type: 'pdf',
+      size: '1.5M',
       schName: '北京大学',
       uploadTime: '2022-03-21',
       uploadUser: 'ztyzhou',
-      link:'https://ztyzhou.com'
+      link: 'https://ztyzhou.com',
     },
     {
       key: '2',
       matName: '2021-四川农业大学数据结构.pdf',
       type: 'pdf',
+      size: '1.5M',
       schName: '四川农业大学',
       uploadTime: '2022-03-21',
       uploadUser: 'ztyzhou',
-      link:'https://ztyzhou.com'
+      link: 'https://ztyzhou.com',
     },
     {
       key: '3',
       matName: '2021-新疆大学数据结构.pdf',
       type: 'pdf',
+      size: '1.5M',
       schName: '新疆大学',
       uploadTime: '2022-03-21',
       uploadUser: 'ztyzhou',
-      link:'https://ztyzhou.com'
+      link: 'https://ztyzhou.com',
     },
   ]
   export default {
