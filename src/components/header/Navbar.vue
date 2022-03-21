@@ -56,37 +56,39 @@
             :rules="rules"
             v-bind="layout"
           >
-            <a-form-model-item has-feedback label="Password" prop="pass">
+            <a-form-model-item label="用户名">
+              <a-input v-model="form.name" />
+            </a-form-model-item>
+            <a-form-model-item has-feedback label="密码" prop="pass">
               <a-input
                 v-model="ruleForm.pass"
                 type="password"
                 autocomplete="off"
               />
             </a-form-model-item>
-            <a-form-model-item has-feedback label="Confirm" prop="checkPass">
+            <a-form-model-item has-feedback label="确认密码" prop="checkPass">
               <a-input
                 v-model="ruleForm.checkPass"
                 type="password"
                 autocomplete="off"
               />
             </a-form-model-item>
-            <a-form-model-item has-feedback label="Age" prop="age">
-              <a-input v-model.number="ruleForm.age" />
+            <a-form-model-item label="手机号">
+              <a-input v-model="form.mobile" />
             </a-form-model-item>
-            <a-form-model-item :wrapper-col="{ span: 14, offset: 4 }">
-              <!-- <a-button type="primary" @click="submitForm('ruleForm')">
-                Submit
-              </a-button>
-              <a-button
-                style="margin-left: 10px"
-                @click="resetForm('ruleForm')"
-              >
-                Reset
-              </a-button> -->
+            <a-form-model-item label="短信验证码" :wrapper-col="{ span: 8 }">
+              <a-input
+                v-model="form.code"
+              />
+            </a-form-model-item>
+            <a-form-model-item :wrapper-col="{ span: 4 , offset: 4 }">
+              <a-button type="primary"> 获取验证码 </a-button>
             </a-form-model-item>
           </a-form-model>
           <template slot="footer">
-            <a-button key="back" @click="resetForm('ruleForm')"> 重置 </a-button>
+            <a-button key="back" @click="resetForm('ruleForm')">
+              重置
+            </a-button>
             <a-button
               key="submit"
               type="primary"
@@ -176,24 +178,6 @@
     name: 'Navbar',
     data() {
       // 表单配置
-      let checkPending
-      let checkAge = (rule, value, callback) => {
-        clearTimeout(checkPending)
-        if (!value) {
-          return callback(new Error('Please input the age'))
-        }
-        checkPending = setTimeout(() => {
-          if (!Number.isInteger(value)) {
-            callback(new Error('Please input digits'))
-          } else {
-            if (value < 18) {
-              callback(new Error('Age must be greater than 18'))
-            } else {
-              callback()
-            }
-          }
-        }, 1000)
-      }
       let validatePass = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('Please input the password'))
@@ -223,20 +207,24 @@
         confirmLoading: false,
 
         // 表单配置
+
         loading: false,
+        form: {
+          name: '',
+          mobile: '',
+          code: '',
+        },
         ruleForm: {
           pass: '',
           checkPass: '',
-          age: '',
         },
         rules: {
           pass: [{ validator: validatePass, trigger: 'change' }],
           checkPass: [{ validator: validatePass2, trigger: 'change' }],
-          age: [{ validator: checkAge, trigger: 'change' }],
         },
         layout: {
           labelCol: { span: 4 },
-          wrapperCol: { span: 14 },
+          wrapperCol: { span: 16 },
         },
       }
     },
@@ -251,7 +239,7 @@
       },
       handleOk() {
         this.ModalText = 'The modal will be closed after two seconds'
-        this.loading = true;
+        this.loading = true
         setTimeout(() => {
           this.visible = false
           this.loading = false
