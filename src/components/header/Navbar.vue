@@ -4,8 +4,6 @@
       <img src="../../assets/nav_logo.png" alt="logo" />
     </div>
     <div class="button-left">
-      <!-- <el-button @click="changeNavId(3)" round>专业</el-button>
-      <el-button @click="changeNavId(4)" round>科目</el-button> -->
       <router-link
         @click.native="changeNavId(2)"
         active-class="active"
@@ -71,13 +69,14 @@
                 v-bind="layout"
               >
                 <a-form-model-item has-feedback label="用户名" prop="name">
-                  <a-input v-model="ruleForm.name" />
+                  <a-input v-model="ruleForm.name" placeholder="请输入用户名" />
                 </a-form-model-item>
                 <a-form-model-item has-feedback label="密码" prop="pass">
                   <a-input
                     v-model="ruleForm.pass"
                     type="password"
                     autocomplete="off"
+                    placeholder="请输入密码"
                   />
                 </a-form-model-item>
                 <a-form-model-item
@@ -89,13 +88,18 @@
                     v-model="ruleForm.checkPass"
                     type="password"
                     autocomplete="off"
+                    placeholder="请再次输入密码"
                   />
                 </a-form-model-item>
                 <a-form-model-item has-feedback label="手机号" prop="mobile">
-                  <a-input autocomplete="true" v-model="ruleForm.mobile" />
+                  <a-input
+                    autocomplete="true"
+                    v-model="ruleForm.mobile"
+                    placeholder="请输入手机号"
+                  />
                 </a-form-model-item>
                 <a-form-model-item label="验证码" :wrapper-col="{ span: 8 }">
-                  <a-input v-model="ruleForm.code" />
+                  <a-input v-model="ruleForm.code" placeholder="请输入验证码" />
                 </a-form-model-item>
                 <a-form-model-item :wrapper-col="{ span: 4, offset: 4 }">
                   <a-button
@@ -136,13 +140,23 @@
                     <a-input
                       autocomplete="true"
                       v-model="ruleFormLogin.mobileLogin"
+                      placeholder="请输入手机号"
                     />
                   </a-form-model-item>
                   <a-form-model-item label="验证码" :wrapper-col="{ span: 8 }">
-                    <a-input v-model="ruleFormLogin.codeLogin" />
+                    <a-input
+                      v-model="ruleFormLogin.codeLogin"
+                      placeholder="请输入验证码"
+                    />
                   </a-form-model-item>
                   <a-form-model-item :wrapper-col="{ span: 4, offset: 4 }">
-                    <a-button type="primary"> 获取验证码 </a-button>
+                    <a-button
+                      type="primary"
+                      :disabled="this.disabledLogin"
+                      @click="sendcodeLogin"
+                    >
+                      {{ this.btntxtLogin }}
+                    </a-button>
                   </a-form-model-item>
                 </div>
                 <!-- 用户名密码登录 -->
@@ -154,7 +168,7 @@
                   >
                     <a-input
                       v-model="ruleFormLogin.nameLogin"
-                      placeholder="请填写用户名或手机号"
+                      placeholder="输入用户名或手机号"
                     />
                   </a-form-model-item>
                   <a-form-model-item has-feedback label="密码" prop="passLogin">
@@ -162,6 +176,7 @@
                       v-model="ruleFormLogin.passLogin"
                       type="password"
                       autocomplete="off"
+                      placeholder="请输入密码"
                     />
                   </a-form-model-item>
                 </div>
@@ -199,7 +214,7 @@
     <div v-if="this.$store.state.isLogin" class="button-right">
       <a-popover
         v-model="visible"
-        :title="userName + ' 的账户'"
+        :title="this.$store.state.userInfo.username + ' 的账户'"
         trigger="click"
       >
         <template slot="content">
@@ -254,14 +269,13 @@
           </div>
           <a-divider />
           <div id="thrdiv">
-            <a-button type="danger" shape="round"> 退出 </a-button>
+            <a-button type="danger" shape="round" @click="logout">
+              退出
+            </a-button>
           </div>
         </template>
         <a-button type="link" shape="circle">
-          <a-avatar
-            src="https://assets.leetcode-cn.com/aliyun-lc-upload/users/shu-sheng-40/avatar_1581912063.png"
-            icon="user"
-          />
+          <a-avatar :src="this.$store.state.userInfo.avatar" icon="user" />
         </a-button>
       </a-popover>
     </div>
@@ -340,8 +354,6 @@
       }
       return {
         visible: false, // 头像气泡卡片配置
-        userName: 'TIANYUZHO',
-
         // 登录/注册 对话框配置
         // ModalText: 'Content of the modal',
         // visible: false,
@@ -408,12 +420,25 @@
         disabled: false,
         time: 0,
         mobiledata: {}, // 返回的数据
+        btntxtLogin: '获取验证码',
+        disabledLogin: false,
+        timeLogin: 0,
+        mobiledataLogin: {}, // 返回的数据
       }
     },
+
     methods: {
       // 改变vuex 中Navbar的id
       changeNavId(id) {
         this.$store.commit('ChangeNavId', id)
+      },
+      // 改变vuex 中的 isLogin
+      changeLoginState(bool) {
+        this.$store.commit('ChangeLoginState', bool)
+      },
+      // 将用户信息写入vuex
+      addUserInfo(user) {
+        this.$store.commit('AddUserInfo', user)
       },
       // 登录/注册的对话框配置
       showModalRegiste() {
@@ -452,13 +477,80 @@
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            this.handleOk() // 对话框原有方法触发
-            alert('提交成功!')
+            // 注册表单提交
+            if (formName === 'ruleForm') {
+              // console.log(this.ruleForm)
+              let data = {
+                username: this.ruleForm.name,
+                password: this.ruleForm.pass,
+                mobile: this.ruleForm.mobile,
+                sms_code: this.ruleForm.code,
+              }
+              let url = 'http://127.0.0.1:8000/users/'
+              axios
+                .post(url, data)
+                .then((res) => {
+                  console.log(res.data)
+                  this.handleOk() // 对话框原有方法触发
+                  alert('提交成功!')
+                })
+                .catch((e) => {
+                  if (e.response.data.non_field_errors) {
+                    alert('验证码错误！')
+                  } else if (e.response.data.mobile) {
+                    alert('手机号为：' + data.mobile + '的用户已存在')
+                  }
+                  console.log(e.response.data)
+                })
+            }
+            // 登录表单提交
+            else if (formName === 'ruleFormLogin') {
+              let data = {
+                username: '',
+                password: '',
+              }
+              // 登录需要的用户信息
+              // 用户名或电话 都通过username字段传给后端
+              // 密码或验证码 都通过passwor字段传给后端
+              if (this.isMobile) {
+                data.username = this.ruleFormLogin.mobileLogin
+                data.password = this.ruleFormLogin.codeLogin
+              } else {
+                data.username = this.ruleFormLogin.nameLogin
+                data.password = this.ruleFormLogin.passLogin
+              }
+              let url = 'http://127.0.0.1:8000/login/'
+              axios
+                .post(url, data)
+                .then((res) => {
+                  console.log(res.data)
+                  if (res.data.error) {
+                    alert(res.data.message)
+                  } else {
+                    localStorage.user_id = res.data.user_id
+                    localStorage.username = res.data.username
+                    localStorage.avatar = res.data.avatar
+                    localStorage.token = res.data.access
+                    // this.$store.state.isLogin = true
+                    this.addUserInfo(res.data)
+                    this.changeLoginState(true)
+                    this.handleOk() // 对话框原有方法触发
+                  }
+                })
+                .catch((e) => {
+                  console.log(e.response.data)
+                })
+            }
           } else {
             console.log('提交失败!!')
             return false
           }
         })
+      },
+      logout() {
+        window.localStorage.clear()
+        // this.$store.state.isLogin = false
+        this.changeLoginState(false)
       },
       resetForm(formName) {
         this.$refs[formName].resetFields()
@@ -474,6 +566,12 @@
           this.$refs.ruleFormLogin.clearValidate()
         }
       },
+      // 注册表单提交处理
+      handleSubmit1(e) {
+        console.log(e)
+        console.log(this.ruleForm)
+      },
+
       // 验证码按钮
       //验证手机号码部分
       sendcode: function () {
@@ -481,19 +579,37 @@
         if (this.ruleForm.mobile == '') {
           alert('请输入手机号码')
           return
-        }else if(!/^0?1[3|4|5|7|8][0-9]\d{8}$/.test(this.ruleForm.mobile)){
+        } else if (!/^0?1[3|4|5|7|8][0-9]\d{8}$/.test(this.ruleForm.mobile)) {
           return
         }
         this.time = 35
         this.disabled = true
         this.timer()
-        axios
-          .get(url)
-          .then((res) => {
-            this.mobiledata = res.data
-            // console.log(this.mobiledata)
-            alert(this.mobiledata.SendStatusSet[0].Message)
-          })
+        axios.get(url).then((res) => {
+          this.mobiledata = res.data
+          // console.log(this.mobiledata)
+          alert(this.mobiledata.SendStatusSet[0].Message)
+        })
+      },
+      sendcodeLogin: function () {
+        let url =
+          ' http://127.0.0.1:8000/sms_code/' + this.ruleFormLogin.mobileLogin
+        if (this.ruleFormLogin.mobileLogin == '') {
+          alert('请输入手机号码')
+          return
+        } else if (
+          !/^0?1[3|4|5|7|8][0-9]\d{8}$/.test(this.ruleFormLogin.mobileLogin)
+        ) {
+          return
+        }
+        this.timeLogin = 35
+        this.disabledLogin = true
+        this.timerLogin()
+        axios.get(url).then((res) => {
+          this.mobiledataLogin = res.data
+          // console.log(this.mobiledata)
+          alert(this.mobiledataLogin.SendStatusSet[0].Message)
+        })
       },
       timer: function () {
         if (this.time > 0) {
@@ -506,6 +622,17 @@
           this.disabled = false
         }
       },
+      timerLogin: function () {
+        if (this.timeLogin > 0) {
+          this.timeLogin--
+          this.btntxtLogin = this.timeLogin + 's,后重新发送'
+          setTimeout(this.timerLogin, 1000)
+        } else {
+          this.timeLogin = 0
+          this.btntxtLogin = '获取验证码'
+          this.disabledLogin = false
+        }
+      },
     },
   }
 </script>
@@ -514,6 +641,7 @@
   .main {
     width: 100%;
     height: 100%;
+    background-color: white;
   }
   .logo {
     height: 70px;

@@ -16,12 +16,28 @@ const actions = {
 const mutations = {
   ChangeNavId(state, value) {
     state.navbarId = value
+  },
+  ChangeLoginState(state, value) {
+    state.isLogin = value
+  },
+  AddUserInfo(state, value) {
+    state.userInfo.user_id = value.user_id
+    state.userInfo.username = value.username
+    state.userInfo.avatar = value.avatar
+    state.userInfo.token = value.access
   }
 }
 //准备state对象——保存具体的数据
 const state = {
   navbarId: 1,
-  isLogin: false
+  // isLogin:true
+  isLogin: false,
+  userInfo: {
+    user_id: '',
+    username: '',
+    avatar: '',
+    token: ''
+  }
 }
 
 //创建并暴露store
