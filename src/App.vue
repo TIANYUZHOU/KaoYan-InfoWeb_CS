@@ -12,6 +12,20 @@
     components: {
       Layout,
     },
+    mounted() {
+      this.getLocalStorage()
+    },
+    methods: {
+      getLocalStorage() {
+        const user = {
+          user_id: localStorage.user_id,
+          username: localStorage.username,
+          avatar: localStorage.avatar,
+          token: localStorage.token,
+        }
+        this.$store.commit('AddUserInfo', user)
+      },
+    },
   }
 </script>
 
@@ -37,7 +51,7 @@
     padding: 0;
     border: 0;
   }
-  body{
+  body {
     min-width: 1300px;
   }
 </style>

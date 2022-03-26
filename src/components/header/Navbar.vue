@@ -49,10 +49,18 @@
     data() {
       return {}
     },
+    mounted() {
+      this.checkLocalStorage()
+    },
     methods: {
       // 改变vuex 中Navbar的id
       changeNavId(id) {
         this.$store.commit('ChangeNavId', id)
+      },
+      checkLocalStorage() {
+        if (localStorage.getItem('user_id')) {
+          this.$store.commit('ChangeLoginState', true)
+        }
       },
     },
   }
@@ -123,5 +131,4 @@
     border-color: #4591e4 !important;
     background-color: #ecf5ff !important;
   }
-  
 </style>
