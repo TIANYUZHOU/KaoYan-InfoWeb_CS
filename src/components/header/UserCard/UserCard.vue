@@ -78,6 +78,10 @@
       }
     },
     methods: {
+      // 改变vuex 中的 isLogin
+      changeLoginState(bool) {
+        this.$store.commit('ChangeLoginState', bool)
+      },
       logout() {
         window.localStorage.clear()
         // this.$store.state.isLogin = false

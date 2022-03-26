@@ -426,11 +426,6 @@
           }
         })
       },
-      logout() {
-        window.localStorage.clear()
-        // this.$store.state.isLogin = false
-        this.changeLoginState(false)
-      },
       resetForm(formName) {
         this.$refs[formName].resetFields()
       },
