@@ -26,6 +26,7 @@
                 type="primary"
                 shape="circle"
                 icon="file"
+                @click="route"
               />
             </a-tooltip>
           </div>
@@ -87,6 +88,9 @@
         // this.$store.state.isLogin = false
         this.changeLoginState(false)
       },
+      route(){
+        this.$router.push('/userProfile')
+      }
     },
   }
 </script>
