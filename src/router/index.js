@@ -11,6 +11,12 @@ import UserProfile from '../pages/UserProfile'
 
 //引入VueRouter
 import VueRouter from 'vue-router'
+
+const includPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location) {
+  return includPush.call(this, location).catch(err => err)
+}
+
 Vue.use(VueRouter);
 
 //创建router实例对象，去管理一组一组的路由规则
@@ -36,7 +42,7 @@ const router = new VueRouter({
       path: '/userProfile',
       component: UserProfile
     }
-    
+
   ]
 })
 
