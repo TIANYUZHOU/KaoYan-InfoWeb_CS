@@ -35,7 +35,12 @@
               v-bind="layout"
             >
               <a-form-model-item has-feedback label="用户名" prop="name">
-                <a-input v-model="ruleForm.name" placeholder="请输入用户名" />
+                <a-input v-model="ruleForm.name" placeholder="请输入用户名"
+                  ><a-icon
+                    slot="prefix"
+                    type="user"
+                    style="color: rgba(0, 0, 0, 0.25)"
+                /></a-input>
               </a-form-model-item>
               <a-form-model-item has-feedback label="密码" prop="pass">
                 <a-input
@@ -43,7 +48,11 @@
                   type="password"
                   autocomplete="off"
                   placeholder="请输入密码"
-                />
+                  ><a-icon
+                    slot="prefix"
+                    type="lock"
+                    style="color: rgba(0, 0, 0, 0.25)"
+                /></a-input>
               </a-form-model-item>
               <a-form-model-item has-feedback label="确认密码" prop="checkPass">
                 <a-input
@@ -51,17 +60,30 @@
                   type="password"
                   autocomplete="off"
                   placeholder="请再次输入密码"
-                />
+                  ><a-icon
+                    slot="prefix"
+                    type="lock"
+                    style="color: rgba(0, 0, 0, 0.25)"
+                /></a-input>
               </a-form-model-item>
               <a-form-model-item has-feedback label="手机号" prop="mobile">
                 <a-input
                   autocomplete="true"
                   v-model="ruleForm.mobile"
                   placeholder="请输入手机号"
-                />
+                  ><a-icon
+                    slot="prefix"
+                    type="mobile"
+                    style="color: rgba(0, 0, 0, 0.25)"
+                /></a-input>
               </a-form-model-item>
               <a-form-model-item label="验证码" :wrapper-col="{ span: 8 }">
-                <a-input v-model="ruleForm.code" placeholder="请输入验证码" />
+                <a-input v-model="ruleForm.code" placeholder="请输入验证码"
+                  ><a-icon
+                    slot="prefix"
+                    type="loading"
+                    style="color: rgba(0, 0, 0, 0.25)"
+                /></a-input>
               </a-form-model-item>
               <a-form-model-item :wrapper-col="{ span: 4, offset: 4 }">
                 <a-button
@@ -103,13 +125,21 @@
                     autocomplete="true"
                     v-model="ruleFormLogin.mobileLogin"
                     placeholder="请输入手机号"
-                  />
+                    ><a-icon
+                      slot="prefix"
+                      type="mobile"
+                      style="color: rgba(0, 0, 0, 0.25)"
+                  /></a-input>
                 </a-form-model-item>
                 <a-form-model-item label="验证码" :wrapper-col="{ span: 8 }">
                   <a-input
                     v-model="ruleFormLogin.codeLogin"
                     placeholder="请输入验证码"
-                  />
+                    ><a-icon
+                      slot="prefix"
+                      type="loading"
+                      style="color: rgba(0, 0, 0, 0.25)"
+                  /></a-input>
                 </a-form-model-item>
                 <a-form-model-item :wrapper-col="{ span: 4, offset: 4 }">
                   <a-button
@@ -127,7 +157,13 @@
                   <a-input
                     v-model="ruleFormLogin.nameLogin"
                     placeholder="输入用户名或手机号"
-                  />
+                  >
+                    <a-icon
+                      slot="prefix"
+                      type="user"
+                      style="color: rgba(0, 0, 0, 0.25)"
+                    />
+                  </a-input>
                 </a-form-model-item>
                 <a-form-model-item has-feedback label="密码" prop="passLogin">
                   <a-input
@@ -135,7 +171,11 @@
                     type="password"
                     autocomplete="off"
                     placeholder="请输入密码"
-                  />
+                    ><a-icon
+                      slot="prefix"
+                      type="lock"
+                      style="color: rgba(0, 0, 0, 0.25)"
+                  /></a-input>
                 </a-form-model-item>
               </div>
             </a-form-model>
