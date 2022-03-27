@@ -7,6 +7,7 @@ import Schools from '../pages/Schools'
 import Majoys from '../pages/Majoys'
 import Subjects from '../pages/Subjects'
 import Materials from '../pages/Materials'
+import UserProfile from '../pages/UserProfile'
 
 //引入VueRouter
 import VueRouter from 'vue-router'
@@ -30,6 +31,10 @@ const router = new VueRouter({
     {
       path: '/materials',
       component: Materials
+    },
+    {
+      path: '/userProfile',
+      component: UserProfile
     }
     
   ]

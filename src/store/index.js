@@ -24,7 +24,7 @@ const mutations = {
     state.userInfo.user_id = value.user_id
     state.userInfo.username = value.username
     state.userInfo.avatar = value.avatar
-    state.userInfo.token = value.access
+    state.userInfo.token = value.access ? value.access : value.token
   }
 }
 //准备state对象——保存具体的数据
