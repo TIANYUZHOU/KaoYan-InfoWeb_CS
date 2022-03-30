@@ -309,6 +309,7 @@
             console.log(res.data)
             this.isError = false
             this.isSuccess = true
+            this.visible = false
           })
           .catch((e) => {
             // alert(e + '\n请检查学校名称是否正确！')
