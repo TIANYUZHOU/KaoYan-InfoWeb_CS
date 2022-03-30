@@ -97,12 +97,10 @@
             </div> -->
             <a-upload
               id="upload"
-              name="file"
-              action=""
+              accept=".jpg,.png"
               :remove="handleRemove"
               :before-upload="beforeUpload"
               :headers="headers"
-              @change="handleChange"
             >
               <a-button> <a-icon type="upload" /> 更换头像 </a-button>
             </a-upload>
@@ -134,6 +132,7 @@
         mobile: '',
         // 上传头像配置
         fileList: [],
+        defaultFileList:[],
         headers: {
           authorization: 'authorization-text',
         },
@@ -184,6 +183,9 @@
 
       // 上传头像配置
       beforeUpload(file) {
+        if(this.fileList.length!==0){
+          this.fileList.length = 0
+        }
         this.fileList = [...this.fileList, file]
         let reader = new FileReader()
         reader.onload = (data) => {
@@ -193,17 +195,6 @@
         reader.readAsDataURL(file)
         // console.log(file)
         return false
-      },
-      handleChange(info) {
-        // console.log(info.file)
-        if (info.file.status !== 'uploading') {
-          // console.log(info.file, info.fileList[0])
-        }
-        if (info.file.status === 'done') {
-          this.$message.success(`${info.file.name} 文件上传成功！`)
-        } else if (info.file.status === 'error') {
-          this.$message.error(`${info.file.name} 文件上传失败！`)
-        }
       },
       handleRemove(file) {
         const index = this.fileList.indexOf(file)
