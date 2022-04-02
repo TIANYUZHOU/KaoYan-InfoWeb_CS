@@ -2,7 +2,7 @@
   <div>
     <div id="father">
       <div id="son1">
-        <a-card :hoverable="true" style="height: 100%">
+        <a-card :hoverable="true" :loading="loading" style="height: 100%">
           <img
             slot="cover"
             alt="example"
@@ -31,6 +31,7 @@
           type="inner"
           style="height: 100%"
           :bordered="true"
+          :loading="loading"
         >
           <a slot="extra" v-if="!isModify" @click="changeisModify">修改</a>
           <a slot="extra" v-if="isModify" @click="changeisModify">取消</a>
@@ -69,13 +70,13 @@
               /></a-input>
             </a-descriptions-item>
             <a-descriptions-item label="上次登录">
-              {{ userProfile.last_login }}
+              {{ userProfile.last_login.split("T")[0] }}
             </a-descriptions-item>
             <a-descriptions-item label="加入时间">
-              {{ userProfile.date_joined }}
+              {{ userProfile.date_joined.split("T")[0] }}
             </a-descriptions-item>
             <a-descriptions-item label="上次编辑">
-              {{ userProfile.editTime }}
+              {{ userProfile.editTime.split("T")[0] }}
             </a-descriptions-item>
           </a-descriptions>
         </a-card>
@@ -108,6 +109,37 @@
         </a-card>
       </div>
     </div>
+    <div id="father2">
+      <a-card
+        :loading="loading"
+        title="我上传的资料"
+        type="inner"
+        :hoverable="true"
+        style="width: 100%"
+      >
+        <a-list size="small" item-layout="horizontal" :data-source="data">
+          <a-list-item slot="renderItem" slot-scope="item">
+            <a-list-item-meta :description="item.description">
+              <a
+                slot="title"
+                :href="
+                  'http://127.0.0.1:8000/api/materials/' + item.id + '/download'
+                "
+                >{{ item.title }}</a
+              >
+            </a-list-item-meta>
+            <div>
+              <a-button type="link" @click="deleteMaterial(item.id)">
+                删除
+              </a-button>
+            </div>
+          </a-list-item>
+        </a-list>
+        <!-- <p v-for="item in this.materials" :key="item.id">
+          {{item.matName}}
+        </p> -->
+      </a-card>
+    </div>
     <div v-if="isModify" id="submit">
       <a-button type="primary" style="width: 100%" @click="submit">
         提交修改
@@ -118,10 +150,13 @@
 
 <script>
   import axios from 'axios'
+  // 上传文件列表数据
+  const data = []
   export default {
     name: 'UserProfile',
     data() {
       return {
+        loading: true,
         userProfile: {},
         isModify: false,
         email: '',
@@ -130,12 +165,15 @@
         preAvtar: '',
         username: '',
         mobile: '',
+        materials: [],
         // 上传头像配置
         fileList: [],
-        defaultFileList:[],
+        defaultFileList: [],
         headers: {
           authorization: 'authorization-text',
         },
+        // 上传文件列表
+        data,
       }
     },
     mounted() {
@@ -149,17 +187,39 @@
           return
         }
         let url = 'http://127.0.0.1:8000/userprofile/' + user_id + '/'
-        axios.get(url).then((res) => {
-          // console.log(res.data)
-          this.userProfile = { ...res.data }
-          let { avatar, email, signature, username, mobile } = res.data
-          this.email = email
-          ;(this.avatar = avatar),
-            (this.signature = signature),
-            (this.username = username),
-            (this.mobile = mobile),
-            (this.preAvtar = avatar)
-        })
+        axios
+          .get(url)
+          .then((res) => {
+            // console.log(res.data)
+            this.userProfile = { ...res.data }
+            let { avatar, email, signature, username, mobile, matUser } = res.data
+            this.email = email
+            ;(this.avatar = avatar),
+              (this.signature = signature),
+              (this.username = username),
+              (this.mobile = mobile),
+              (this.preAvtar = avatar),
+              (this.materials = matUser)
+          })
+          .then(() => {
+            this.materials.forEach((value) => {
+              data.push({
+                title: value.matName,
+                description:
+                  '描述：' +
+                  value.description +
+                  ' 上传时间：' +
+                  value.uploadTime.split('T')[0] +
+                  ' 下载量：' +
+                  value.downloads,
+                id: value.id,
+              })
+            })
+
+            setTimeout(() => {
+              this.loading = false
+            }, 2000)
+          })
       },
       // 改变编辑状态
       changeisModify() {
@@ -183,7 +243,7 @@
 
       // 上传头像配置
       beforeUpload(file) {
-        if(this.fileList.length!==0){
+        if (this.fileList.length !== 0) {
           this.fileList.length = 0
         }
         this.fileList = [...this.fileList, file]
@@ -250,6 +310,17 @@
           this.isModify = !this.isModify
         })
       },
+      // 删除上传的资料
+      deleteMaterial(matId) {
+        let url = 'http://127.0.0.1:8000/api/materials/' + matId
+        axios.delete(url).then(()=>{
+          alert('删除成功！')
+          data.splice(0)
+          this.getUserProfile()
+        }).catch((e)=>{
+          console.log(e)
+        })
+      },
     },
   }
 </script>
@@ -257,6 +328,13 @@
 <style scoped>
   #father {
     margin: 100px auto;
+    margin-bottom: 0px;
+    display: flex;
+    width: 90%;
+    flex-wrap: wrap;
+  }
+  #father2 {
+    margin: 20px auto;
     margin-bottom: 0px;
     display: flex;
     width: 90%;

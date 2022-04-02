@@ -90,11 +90,13 @@
           </a-modal>
           <a-card style="width: 100%">
             <!-- 搜索框 -->
-            <div style="width: 500px">
+            <div style="width: 100%">
               <a-input-search
-                placeholder="请输入搜索内容"
+                placeholder="请输入【资料名称】 / 【资料所属学校】 进行搜索"
                 enter-button
                 @search="onSearch"
+                size="large"
+                v-model="searchContent"
               />
             </div>
             <br />
@@ -115,6 +117,14 @@
                 :options="plainOptions"
                 @change="onChange"
               />
+              <div style="display: inline; margin-left: 20px">
+                <a-button
+                  style="height: 35px"
+                  type="primary"
+                  @click="submitCheckBox"
+                  >确认
+                </a-button>
+              </div>
             </div>
           </a-card>
         </a-card>
@@ -126,14 +136,19 @@
           <span slot="matName" slot-scope="text, record">
             <a :href="record.link">{{ record.matName }}</a>
           </span>
+          <span slot="downloads" slot-scope="text, record">
+            {{ record.downloads }}
+          </span>
           <span slot="link" slot-scope="text, record">
             <a :href="record.link">点击下载</a>
           </span>
-          <span slot="type" slot-scope="text, record">
-            <a-tag color="#2db7f5"
-              >{{ record.size + ' ' + record.type }}
-            </a-tag>
+          <span slot="size" slot-scope="text, record">
+            <a-tag color="#f50">{{ record.size }} </a-tag>
           </span>
+          <span slot="uploadTime" slot-scope="text, record">
+            <a-tag color="blue">{{ record.uploadTime.split("T")[0] }} </a-tag>
+          </span>
+          
           <!-- <span slot="type"> </span>
           <span slot="uploadTime"> </span>
           <span slot="uploadUser"> </span>
@@ -158,6 +173,8 @@
     '操作系统',
     '计算机网络',
     '计算机组成原理',
+    '公共课资料',
+    '专业课资料',
     '其他',
   ]
   const defaultCheckedList = ['数学', '408']
@@ -169,12 +186,19 @@
       key: 'matName',
       slots: { title: 'customTitle' },
       scopedSlots: { customRender: 'matName' },
+      width: 200
+    },
+    {
+      title: '文件大小',
+      dataIndex: 'size',
+      key: 'size',
+      scopedSlots: { customRender: 'size' },
     },
     {
       title: '文件描述',
-      dataIndex: 'type',
-      key: 'type',
-      scopedSlots: { customRender: 'type' },
+      key: 'description',
+      dataIndex: 'description',
+      scopedSlots: { customRender: 'description' },
     },
     {
       title: '所属学校',
@@ -190,6 +214,12 @@
       title: '上传时间',
       key: 'uploadTime',
       dataIndex: 'uploadTime',
+      scopedSlots: { customRender: 'uploadTime' },
+    },
+    {
+      title: '下载量',
+      key: 'downloads',
+      scopedSlots: { customRender: 'downloads' },
     },
     {
       title: '下载链接',
@@ -198,38 +228,7 @@
     },
   ]
   // 筛选后学校表格数据
-  const schoolData = [
-    {
-      key: '1',
-      matName: '2021-408真题.pdf',
-      type: 'pdf',
-      size: '1.5M',
-      schName: '北京大学',
-      uploadTime: '2022-03-21',
-      uploadUser: 'ztyzhou',
-      link: 'https://ztyzhou.com',
-    },
-    {
-      key: '2',
-      matName: '2021-四川农业大学数据结构.pdf',
-      type: 'pdf',
-      size: '1.5M',
-      schName: '四川农业大学',
-      uploadTime: '2022-03-21',
-      uploadUser: 'ztyzhou',
-      link: 'https://ztyzhou.com',
-    },
-    {
-      key: '3',
-      matName: '2021-新疆大学数据结构.pdf',
-      type: 'pdf',
-      size: '1.5M',
-      schName: '新疆大学',
-      uploadTime: '2022-03-21',
-      uploadUser: 'ztyzhou',
-      link: 'https://ztyzhou.com',
-    },
-  ]
+  const schoolData = []
   export default {
     components: { secNavbar },
     data() {
@@ -256,13 +255,20 @@
         errorDescription: '',
         isError: false,
         isSuccess: false,
+
+        // 搜索框
+        searchContent: '',
       }
+    },
+    mounted(){
+      this.submitCheckBox()
     },
     methods: {
       onChange(checkedList) {
         this.indeterminate =
           !!checkedList.length && checkedList.length < plainOptions.length
         this.checkAll = checkedList.length === plainOptions.length
+        // console.log(this.checkedList)
       },
       onCheckAllChange(e) {
         Object.assign(this, {
@@ -270,9 +276,116 @@
           indeterminate: false,
           checkAll: e.target.checked,
         })
+        // console.log(this.checkedList)
+      },
+      submitCheckBox() {
+        schoolData.splice(0)
+        let url = []
+        let baseUrl = 'http://127.0.0.1:8000/api/materialInfo/'
+        if (this.checkedList.length === 0) {
+          // url = [baseUrl]
+        } else {
+          let map = {
+            数学: 'MATH',
+            英语: 'EN',
+            政治: 'POL',
+            公共课资料: 'PUCC',
+            408: '408',
+            数据结构: 'DS',
+            操作系统: 'OS',
+            计算机网络: 'CN',
+            计算机组成原理: 'CO',
+            专业课资料: 'PRCC',
+            其他: 'ELSE',
+          }
+          const submitCheckedList = this.checkedList.map((item) => map[item])
+          // console.log(submitCheckedList)
+          // debugger
+          submitCheckedList.forEach((value) => {
+            url.push(baseUrl + '?matClass=' + value)
+          })
+        }
+        let key = 1
+        url.forEach((value) => {
+          axios
+            .get(value)
+            .then((res) => {
+              if (res.data.results.length !== 0) {
+                res.data.results.forEach((value) => {
+                  const materialData = {
+                    key: key++,
+                    matName: value.matName,
+                    description: value.description,
+                    size:
+                      value.fileSize / 1024 / 1024 > 1
+                        ? (value.fileSize / 1024 / 1024).toFixed(2) + '   M'
+                        : (value.fileSize / 1024).toFixed(0) + '   KB',
+                    schName: value.school.schName,
+                    uploadTime: value.uploadTime,
+                    uploadUser: value.user.username,
+                    downloads: value.downloads,
+                    link:
+                      'http://127.0.0.1:8000/api/materials/' +
+                      value.id +
+                      '/download',
+                  }
+                  schoolData.push(materialData)
+                  // console.log(res.data.results[0].matName)
+                })
+              }
+            })
+            .catch((e) => {
+              console.log(e)
+            })
+        })
+
+        // axios
+        //   .get(url)
+        //   .then((res) => {
+        //     console.log(res.data)
+        //   })
+        //   .catch((e) => {})
       },
       onSearch(value) {
-        console.log(value)
+        if(value === ''){
+          return
+        }
+        schoolData.splice(0)
+        let url = 'http://127.0.0.1:8000/api/materialInfo/?search=' + value
+        let key = 1
+        axios
+          .get(url)
+          .then((res) => {
+            {
+              let results = res.data.results
+              if (results.length !== 0) {
+                results.forEach((value) => {
+                  const materialData = {
+                    key: key++,
+                    matName: value.matName,
+                    description: value.description,
+                    size:
+                      value.fileSize / 1024 / 1024 > 1
+                        ? (value.fileSize / 1024 / 1024).toFixed(2) + '   M'
+                        : (value.fileSize / 1024).toFixed(0) + '   KB',
+                    schName: value.school.schName,
+                    uploadTime: value.uploadTime,
+                    uploadUser: value.user.username,
+                    downloads: value.downloads,
+                    link:
+                      'http://127.0.0.1:8000/api/materials/' +
+                      value.id +
+                      '/download',
+                  }
+                  schoolData.push(materialData)
+                  // console.log(res.data.results[0].matName)
+                })
+              }
+            }
+          })
+          .catch((e) => {
+            console.log(e)
+          })
       },
       // 上传资料对话框配置
       showModal() {
@@ -307,9 +420,11 @@
           .post(url, formData)
           .then((res) => {
             console.log(res.data)
+            setTimeout(() => {
+              this.visible = false
+            }, 2000)
             this.isError = false
             this.isSuccess = true
-            this.visible = false
           })
           .catch((e) => {
             // alert(e + '\n请检查学校名称是否正确！')
@@ -321,7 +436,7 @@
       // 上传组件配置
       beforeUpload(file) {
         this.fileList = [...this.fileList, file]
-        console.log(this.fileList)
+        // console.log(this.fileList)
         this.isError = false
         return false
       },
@@ -338,6 +453,14 @@
     watch: {
       schoolName() {
         this.isError = false
+      },
+      searchContent(newv) {
+        // 使用搜索则全选多选框
+        if (newv !== '') {
+          this.checkedList = plainOptions
+          this.indeterminate = false
+          this.checkAll = true
+        }
       },
     },
   }
