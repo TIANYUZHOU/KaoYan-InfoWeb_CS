@@ -8,10 +8,13 @@
           title="科目筛选 >"
         >
           <a-row :gutter="16">
-            <a-col :span="12" style="padding-right: 0px; border-right: 1px solid #eceaea">
+            <a-col
+              :span="12"
+              style="padding-right: 0px; border-right: 1px solid #eceaea"
+            >
               <!-- 考试范围卡片 -->
               <a-card
-                title="考试范围"
+                title="专业课"
                 type="inner"
                 :bordered="false"
                 :bodyStyle="{ padding: '10px' }"
@@ -35,14 +38,10 @@
                       @change="onChange"
                     />
                   </div>
-                  
                 </a-card>
               </a-card>
             </a-col>
-            <a-col
-              :span="12"
-              style="padding-left: 0px;"
-            >
+            <a-col :span="12" style="padding-left: 0px">
               <!-- 院校标签卡片 -->
               <a-card
                 title="院校标签"
@@ -50,9 +49,9 @@
                 :bordered="false"
                 :bodyStyle="{ padding: '10px' }"
               >
-               <a-card style="width: 100%">
+                <a-card title="院校属性" style="width: 100%">
                   <!-- 多选框 -->
-                  <div>
+                  <!-- <div>
                     <div :style="{ borderBottom: '1px solid #E9E9E9' }">
                       <a-checkbox
                         :indeterminate="indeterminate2"
@@ -68,15 +67,22 @@
                       :options="plainOptions2"
                       @change="onChange2"
                     />
-                  </div>
-                  
+                  </div> -->
+                  <!-- 单选框 -->
+                  <a-radio-group v-model="value">
+                    <a-radio :value="1"> 985工程 </a-radio>
+                    <a-radio :value="2"> 211工程 </a-radio>
+                    <a-radio :value="3"> 一流大学 </a-radio>
+                    <a-radio :value="4"> 一流学科 </a-radio>
+                    <a-radio :value="5"> 其他 </a-radio>
+                  </a-radio-group>
                 </a-card>
               </a-card>
             </a-col>
           </a-row>
           <!-- 卡片事件组件 -->
           <template slot="actions" class="ant-card-actions">
-            <a-button type="primary" size="large"
+            <a-button @click="submitCheckBox" type="primary" size="large"
               ><a-icon type="thunderbolt" /> 确认
             </a-button>
           </template>
@@ -108,7 +114,7 @@
           </span>
           <span slot="subReview" slot-scope="text">
             <a-tag color="#f50"> {{ text.subReviewCS }} </a-tag>
-            <a-tag color="#2db7f5"> {{ text.subReviewES }} </a-tag>
+            <a-tag color="#2db7f5"> {{ text.subReviewSE }} </a-tag>
           </span>
         </a-table>
       </div>
@@ -117,6 +123,7 @@
 </template>
 
 <script>
+  import axios from 'axios'
   // 导入标题卡片导航
   import secNavbar from './pubChildren/secNavbar.vue'
   // 筛选后学校表格
@@ -152,39 +159,37 @@
   ]
   // 筛选后学校表格数据
   const schoolData = [
-    {
-      key: '1',
-      schName: '北京大学',
-      province: '北京',
-      belong: '教育部',
-      tags: ['一流大学A类', '985', '211'],
-      subReviewCS: '计算机：A+',
-      subReviewES: '软件：A+',
-    },
-    {
-      key: '2',
-      schName: '四川农业大学',
-      province: '四川',
-      belong: '四川省',
-      tags: ['一流学科', '211'],
-      // subReviewCS: '计算机：无',   不写就是一条杠
-      // subReviewES: '软件：无',
-    },
-    {
-      key: '3',
-      schName: '新疆大学',
-      province: '新疆',
-      belong: '新疆维吾尔自治区',
-      tags: ['一流大学B类', '211'],
-      subReviewCS: '计算机：B-',
-      subReviewES: '软件：C+',
-    },
+    // {
+    //   key: '1',
+    //   schName: '北京大学',
+    //   province: '北京',
+    //   belong: '教育部',
+    //   tags: ['一流大学', '一流学科', '985', '211'],
+    //   subReviewCS: '计算机：A+',
+    //   subReviewSE: '软件：A+',
+    // },
+    // {
+    //   key: '2',
+    //   schName: '四川农业大学',
+    //   province: '四川',
+    //   belong: '四川省',
+    //   tags: ['一流学科', '211'],
+    //   // subReviewCS: '计算机：无',   不写就是一条杠
+    //   // subReviewSE: '软件：无',
+    // },
+    // {
+    //   key: '3',
+    //   schName: '新疆大学',
+    //   province: '新疆',
+    //   belong: '新疆维吾尔自治区',
+    //   tags: ['一流大学', '一流学科', '211'],
+    //   subReviewCS: '计算机：B-',
+    //   subReviewSE: '软件：C+',
+    // },
   ]
-  // 多选框1参数
-  const plainOptions = ['数学一', '数学二', '英语一','英语二','一门','两门','三门','四门','408']
-  const defaultCheckedList = ['数学一','英语一', '408']
-  const plainOptions2 = ['985', '211', '一流大学A类','一流大学B类','一流学科','其他']
-  const defaultCheckedList2 = ['985', '一流大学A类']
+  // 多选框参数
+  const plainOptions = ['一门', '两门', '三门', '四门', '408']
+  const defaultCheckedList = ['408']
   export default {
     components: { secNavbar },
     name: 'Subjects',
@@ -198,11 +203,12 @@
         checkAll: false,
         plainOptions,
 
-        checkedList2: defaultCheckedList2,
-        indeterminate2: true,
-        checkAll2: false,
-        plainOptions2,
+        // 单选框参数
+        value: 1,
       }
+    },
+    mounted(){
+      this.submitCheckBox()
     },
     methods: {
       // 卡片下拉栏路由
@@ -219,12 +225,10 @@
       // 计算学校标签颜色
       tagColor(tag) {
         // console.log(tag)
-        if (tag === '一流大学A类') {
+        if (tag === '一流大学') {
           return 'volcano'
-        } else if (tag === '一流大学B类') {
-          return 'orange'
         } else if (tag === '一流学科') {
-          return 'green'
+          return 'pink'
         } else if (tag === '985') {
           return 'red'
         } else if (tag === '211') {
@@ -247,19 +251,78 @@
           checkAll: e.target.checked,
         })
       },
-      // 多选框函数
-      onChange2(checkedList2) {
-        this.indeterminate2 =
-          !!checkedList2.length && checkedList2.length < plainOptions2.length
-        this.checkAll2 = checkedList2.length === plainOptions2.length
-      },
-      // 多选框函数
-      onCheckAllChange2(e) {
-        Object.assign(this, {
-          checkedList2: e.target.checked ? plainOptions2 : [],
-          indeterminate2: false,
-          checkAll2: e.target.checked,
-        })
+      // 提交查询
+      submitCheckBox() {
+        schoolData.splice(0)
+        if (this.checkedList.length === 0) {
+          // url = [baseUrl]
+        } else {
+          let proMap = {
+            一门: '1',
+            两门: '2',
+            三门: '3',
+            四门: '4',
+            408: '四零八',
+          }
+          const schPropertMap = {
+            1: 'is_985',
+            2: 'is_211',
+            3: 'is_firClassU',
+            4: 'is_firClassS',
+            5: 'is_else',
+          }
+          // const submitCheckedList = this.checkedList.map((item) => map[item])
+          // submitCheckedList.forEach((value) => {
+          //   url.push(baseUrl + '?matClass=' + value)
+          // })
+          const proCourseCountParameter = this.checkedList
+            .map((item) => proMap[item])
+            .join(',')
+          // console.log(submitParameter)
+          // const schPropertyParameter = this.checkedList2
+          //   .map((item) => schPropertMap[item] + '=true')
+          //   .join('&')
+          const schPropertyParameter = schPropertMap[this.value] + '=true'
+          let url =
+            'http://127.0.0.1:8000/api/schools/?' +
+            'proCourseCount=' +
+            proCourseCountParameter +
+            '&' +
+            schPropertyParameter
+          // console.log(url)
+          let key = 1
+          axios
+            .get(url)
+            .then((res) => {
+              // console.log(res.data)
+              res.data.forEach((item) => {
+                const schData = {
+                  key: key++,
+                  schName: item.schName,
+                  province: item.location,
+                  belong: item.subjection,
+                  tags: [],
+                  subReviewCS: item.assessmentCS
+                    ? '计算机：' + item.assessmentCS
+                    : '',
+                  subReviewSE: item.assessmentSE
+                    ? '软件：' + item.assessmentSE
+                    : '',
+                }
+                // console.log(schData)
+                if (item.is_985) schData.tags.push('985')
+                if (item.is_211) schData.tags.push('211')
+                if (item.is_firClassU) schData.tags.push('一流大学')
+                if (item.is_firClassS) schData.tags.push('一流学科')
+                if (item.is_else) schData.tags.push('四非')
+                schoolData.push(schData)
+              })
+              // console.log(schoolData)
+            })
+            .catch((e) => {
+              console.log(e)
+            })
+        }
       },
     },
   }
