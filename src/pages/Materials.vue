@@ -131,7 +131,7 @@
       </div>
       <!-- 资料表格 -->
       <div class="materialsTable">
-        <a-table :columns="columns" :data-source="schoolData">
+        <a-table :columns="columns" :data-source="matData">
           <span slot="customTitle"><a-icon type="crown" />资料名称 </span>
           <span slot="matName" slot-scope="text, record">
             <a :href="record.link">{{ record.matName }}</a>
@@ -228,7 +228,7 @@
     },
   ]
   // 筛选后学校表格数据
-  const schoolData = []
+  const matData = []
   export default {
     components: { secNavbar },
     data() {
@@ -238,7 +238,7 @@
         checkAll: false,
         plainOptions,
         columns,
-        schoolData,
+        matData,
 
         // 上传资料对话框配置
         visible: false,
@@ -279,7 +279,7 @@
         // console.log(this.checkedList)
       },
       submitCheckBox() {
-        schoolData.splice(0)
+        matData.splice(0)
         let url = []
         let baseUrl = 'http://127.0.0.1:8000/api/materialInfo/'
         if (this.checkedList.length === 0) {
@@ -329,7 +329,7 @@
                       value.id +
                       '/download',
                   }
-                  schoolData.push(materialData)
+                  matData.push(materialData)
                   // console.log(res.data.results[0].matName)
                 })
               }
@@ -350,7 +350,7 @@
         if(value === ''){
           return
         }
-        schoolData.splice(0)
+        matData.splice(0)
         let url = 'http://127.0.0.1:8000/api/materialInfo/?search=' + value
         let key = 1
         axios
@@ -377,7 +377,7 @@
                       value.id +
                       '/download',
                   }
-                  schoolData.push(materialData)
+                  matData.push(materialData)
                   // console.log(res.data.results[0].matName)
                 })
               }
