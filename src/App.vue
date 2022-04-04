@@ -22,6 +22,8 @@
           username: localStorage.username,
           avatar: localStorage.avatar,
           token: localStorage.token,
+          colId: localStorage.colId,
+          schIdList: localStorage.schIdList,
         }
         this.$store.commit('AddUserInfo', user)
       },

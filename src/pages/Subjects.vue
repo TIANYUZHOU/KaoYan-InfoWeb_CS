@@ -105,7 +105,14 @@
       </div>
       <div class="shcoolTable">
         <a-table :columns="columns" :data-source="schoolData">
-          <a slot="schName" slot-scope="text">{{ text }}</a>
+          <a
+              slot="schName"
+              slot-scope="text"
+              @click="
+                $router.push({ path: '/majors', query: { schName: text } })
+              "
+              >{{ text }}</a
+            >
           <span slot="customTitle"><a-icon type="fire" />院校名称</span>
           <span slot="tags" slot-scope="tags">
             <a-tag v-for="tag in tags" :key="tag" :color="tagColor(tag)">
@@ -115,6 +122,9 @@
           <span slot="subReview" slot-scope="text">
             <a-tag color="#f50"> {{ text.subReviewCS }} </a-tag>
             <a-tag color="#2db7f5"> {{ text.subReviewSE }} </a-tag>
+          </span>
+          <span slot="collect" slot-scope="text">
+            <a @click="addCollectItem(text.schId)">收藏</a>
           </span>
         </a-table>
       </div>
@@ -155,6 +165,13 @@
       // dataIndex: 'subReview',
       key: 'subReview',
       scopedSlots: { customRender: 'subReview' },
+    },
+    {
+      title: '点击收藏',
+      // dataIndex: 'subReview',
+      key: 'collect',
+      scopedSlots: { customRender: 'collect' },
+      align: 'center',
     },
   ]
   // 筛选后学校表格数据
@@ -205,9 +222,11 @@
 
         // 单选框参数
         value: 1,
+        // 学校id
+        schIdList: this.$store.state.userInfo.schIdList,
       }
     },
-    mounted(){
+    mounted() {
       this.submitCheckBox()
     },
     methods: {
@@ -297,6 +316,7 @@
               // console.log(res.data)
               res.data.forEach((item) => {
                 const schData = {
+                  schId: item.id,
                   key: key++,
                   schName: item.schName,
                   province: item.location,
@@ -318,6 +338,39 @@
                 schoolData.push(schData)
               })
               // console.log(schoolData)
+            })
+            .catch((e) => {
+              console.log(e)
+            })
+        }
+      },
+      // 收藏
+      addCollectItem(schId) {
+        {
+          let user_id = this.$store.state.userInfo.user_id
+          let colId = this.$store.state.userInfo.colId
+          let url = 'http://127.0.0.1:8000/api/collect/' + colId + '/'
+          // console.log(this.schIdList)
+          // console.log(this.schIdList.indexOf(8))
+          if (this.schIdList.indexOf(schId) !== -1) {
+            alert('已经在收藏夹啦！')
+            return
+          }
+          // 如果没有收藏过该学校
+          this.schIdList.push(schId)
+          // console.log(this.schIdList)
+          let parameter = {
+            id: colId,
+            user: user_id,
+            school: this.schIdList,
+          }
+          console.log(parameter)
+          axios
+            .put(url, parameter) // 为啥用 PUT 而不是 DELETE？ ：这里删除后端其实用的是 update方法
+            .then(() => {
+              localStorage.schIdList = this.schIdList
+              this.$store.state.userInfo.schIdList = this.schIdList
+              alert('添加收藏成功！')
             })
             .catch((e) => {
               console.log(e)

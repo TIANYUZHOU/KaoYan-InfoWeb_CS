@@ -87,15 +87,6 @@
             <div class="head_img">
               <img :src="this.preAvtar" />
             </div>
-            <!-- <input
-              type="file"
-              accept="image/*"
-              @change="handleFile"
-              class="hiddenInput"
-            />
-            <div class="setting_right" @click.stop="uploadHeadImg">
-              <div class="caption">更改头像</div>
-            </div> -->
             <a-upload
               id="upload"
               accept=".jpg,.png"
@@ -120,7 +111,7 @@
         title="我上传的资料"
         type="inner"
         :hoverable="true"
-        style="width: 100%"
+        style="width: 48%"
       >
         <a-list size="small" item-layout="horizontal" :data-source="data">
           <a-list-item slot="renderItem" slot-scope="item">
@@ -144,6 +135,45 @@
           {{item.matName}}
         </p> -->
       </a-card>
+      <a-card
+        :loading="loading"
+        title="我的收藏"
+        type="inner"
+        :hoverable="true"
+        :bodyStyle="{ padding: 0 }"
+        style="width: 48%; margin-left: 4%"
+      >
+        <div class="shcoolTable">
+          <a-table
+            :columns="columns"
+            :data-source="schoolData"
+            :showHeader="false"
+            :pagination="false"
+          >
+            <a
+              slot="schName"
+              slot-scope="text"
+              @click="
+                $router.push({ path: '/majors', query: { schName: text } })
+              "
+              >{{ text }}</a
+            >
+            <span slot="customTitle">院校名称</span>
+            <span slot="tags" slot-scope="tags">
+              <a-tag v-for="tag in tags" :key="tag" :color="tagColor(tag)">
+                {{ tag.toUpperCase() }}
+              </a-tag>
+            </span>
+            <span slot="subReview" slot-scope="text">
+              <a-tag color="#f50"> {{ text.subReviewCS }} </a-tag>
+              <a-tag color="#2db7f5"> {{ text.subReviewSE }} </a-tag>
+            </span>
+            <span slot="collect" slot-scope="text">
+              <a @click="deleteCollectItem(text.schId)">删除</a>
+            </span>
+          </a-table>
+        </div>
+      </a-card>
     </div>
   </div>
 </template>
@@ -152,12 +182,56 @@
   import axios from 'axios'
   // 上传文件列表数据
   const data = []
+  // 学校表格
+  const columns = [
+    {
+      dataIndex: 'schName',
+      key: 'schName',
+      slots: { title: 'customTitle' },
+      scopedSlots: { customRender: 'schName' },
+      // align: 'center',
+    },
+    // {
+    //   title: '地区',
+    //   dataIndex: 'province',
+    //   key: 'province',
+    // },
+    // {
+    //   title: '隶属单位',
+    //   dataIndex: 'belong',
+    //   key: 'belong',
+    // },
+    {
+      title: '标签',
+      key: 'tags',
+      dataIndex: 'tags',
+      scopedSlots: { customRender: 'tags' },
+      align: 'center',
+    },
+    {
+      title: '学科评估',
+      // dataIndex: 'subReview',
+      key: 'subReview',
+      scopedSlots: { customRender: 'subReview' },
+      align: 'center',
+    },
+    {
+      title: '是否收藏',
+      // dataIndex: 'subReview',
+      key: 'collect',
+      scopedSlots: { customRender: 'collect' },
+      align: 'center',
+    },
+  ]
+  // 学校数据
+  const schoolData = [
+  ]
   export default {
     name: 'UserProfile',
     data() {
       return {
         loading: true,
-        userProfile: {},
+        userProfile: { last_login: '', date_joined: '', editTime: '' },
         isModify: false,
         email: '',
         signature: '',
@@ -174,6 +248,14 @@
         },
         // 上传文件列表
         data,
+        // 学校表格
+        columns,
+        // 学校数据
+        schoolData,
+        // 收藏夹id
+        colId: '',
+        // 学校id
+        schIdList: [],
       }
     },
     mounted() {
@@ -182,15 +264,18 @@
     methods: {
       // 获取用户信息
       getUserProfile() {
+        this.data.splice(0)
+        this.schoolData.splice(0)
         let user_id = localStorage.getItem('user_id')
         if (!user_id) {
           return
         }
         let url = 'http://127.0.0.1:8000/userprofile/' + user_id + '/'
+        let key = 1
         axios
           .get(url)
           .then((res) => {
-            // console.log(res.data)
+            // console.log(res.data.colUser.school)
             this.userProfile = { ...res.data }
             let { avatar, email, signature, username, mobile, matUser } = res.data
             this.email = email
@@ -200,6 +285,33 @@
               (this.mobile = mobile),
               (this.preAvtar = avatar),
               (this.materials = matUser)
+
+            // 收藏
+            this.colId = res.data.colUser.id
+            res.data.colUser.school.forEach((item) => {
+              this.schIdList.push(item.id) // 存放school id 便于后期删除操作
+              const schData = {
+                schId: item.id,
+                key: key++,
+                schName: item.schName,
+                province: item.location,
+                belong: item.subjection,
+                tags: [],
+                subReviewCS: item.assessmentCS
+                  ? '计算机：' + item.assessmentCS
+                  : '',
+                subReviewSE: item.assessmentSE
+                  ? '软件：' + item.assessmentSE
+                  : '',
+              }
+              // console.log(schData)
+              if (item.is_985) schData.tags.push('985')
+              if (item.is_211) schData.tags.push('211')
+              if (item.is_firClassU) schData.tags.push('一流大学')
+              if (item.is_firClassS) schData.tags.push('一流学科')
+              if (item.is_else) schData.tags.push('四非')
+              schoolData.push(schData)
+            })
           })
           .then(() => {
             this.materials.forEach((value) => {
@@ -218,28 +330,13 @@
 
             setTimeout(() => {
               this.loading = false
-            }, 2000)
+            }, 1000)
           })
       },
       // 改变编辑状态
       changeisModify() {
         this.isModify = !this.isModify
       },
-      // 打开图片上传
-      // uploadHeadImg: function () {
-      //   this.$el.querySelector('.hiddenInput').click()
-      // },
-      // 将头像显示
-      // handleFile: function (e) {
-      //   let $target = e.target || e.srcElement
-      //   let file = $target.files[0]
-      //   let reader = new FileReader()
-      //   reader.onload = (data) => {
-      //     let res = data.target || data.srcElement
-      //     this.avatar = res.result
-      //   }
-      //   reader.readAsDataURL(file)
-      // },
 
       // 上传头像配置
       beforeUpload(file) {
@@ -318,6 +415,50 @@
           .then(() => {
             alert('删除成功！')
             data.splice(0)
+            this.getUserProfile()
+          })
+          .catch((e) => {
+            console.log(e)
+          })
+      },
+      // 计算学校标签颜色
+      tagColor(tag) {
+        // console.log(tag)
+        if (tag === '一流大学A类') {
+          return 'volcano'
+        } else if (tag === '一流大学B类') {
+          return 'orange'
+        } else if (tag === '一流学科') {
+          return 'green'
+        } else if (tag === '985') {
+          return 'red'
+        } else if (tag === '211') {
+          return 'cyan'
+        } else {
+          return tag.length > 5 ? 'geekblue' : 'purple'
+        }
+      },
+      // 删除收藏
+      deleteCollectItem(schId) {
+        let user_id = localStorage.getItem('user_id')
+        let url = 'http://127.0.0.1:8000/api/collect/' + this.colId + '/'
+        // console.log(this.schIdList)
+        this.schIdList.splice(this.schIdList.indexOf(schId), 1) // 查找要删除的schId并删除
+        // console.log(this.schIdList)
+        let parameter = {
+          id: this.colId,
+          user: user_id,
+          school: this.schIdList,
+        }
+        console.log(parameter)
+        axios
+          .put(url, parameter) // 为啥用 PUT 而不是 DELETE？ ：这里删除后端其实用的是 update方法
+          .then(() => {
+            alert('删除成功！')
+            schoolData.splice(0)
+            this.schIdList.splice(0)
+            localStorage.schIdList = this.schIdList
+            this.$store.state.userInfo.schIdList = this.schIdList
             this.getUserProfile()
           })
           .catch((e) => {

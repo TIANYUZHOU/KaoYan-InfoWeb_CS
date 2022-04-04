@@ -25,6 +25,9 @@ const mutations = {
     state.userInfo.username = value.username
     state.userInfo.avatar = value.avatar
     state.userInfo.token = value.access ? value.access : value.token
+    state.userInfo.colId = value.colId
+    // 登录直接存入数组不用转化，通过本地存储localstorage只能存字符串需要转化
+    state.userInfo.schIdList = typeof (value.schIdList) === 'string' ? value.schIdList.split(',') : value.schIdList
   }
 }
 //准备state对象——保存具体的数据
@@ -36,8 +39,10 @@ const state = {
     user_id: '',
     username: '',
     avatar: '',
-    token: ''
-  }
+    token: '',
+    colId: '', // 收藏夹id
+    schIdList: [] // 用户收藏对的学校id
+  },
 }
 
 //创建并暴露store

@@ -143,19 +143,23 @@
         >
           <a-descriptions title="详细信息" bordered>
             <a-descriptions-item label="院校名称" :span="1">
-              {{record.schName}}
+              {{ record.schName }}
             </a-descriptions-item>
             <a-descriptions-item label="院系" :span="2">
-              {{record.academy}}
+              {{ record.academy }}
             </a-descriptions-item>
             <a-descriptions-item label="专业">
-              {{record.major}}
+              {{ record.major }}
             </a-descriptions-item>
             <a-descriptions-item label="研究方向" :span="2">
-              {{record.researchDir}}
+              {{ record.researchDir }}
             </a-descriptions-item>
-            <a-descriptions-item label="考试方式"> {{record.examForm}} </a-descriptions-item>
-            <a-descriptions-item label="学习方式"> {{record.leaMethod}} </a-descriptions-item>
+            <a-descriptions-item label="考试方式">
+              {{ record.examForm }}
+            </a-descriptions-item>
+            <a-descriptions-item label="学习方式">
+              {{ record.leaMethod }}
+            </a-descriptions-item>
             <a-descriptions-item label="拟招生人数">
               <a-tag
                 v-for="tag in record.tags"
@@ -166,10 +170,10 @@
               </a-tag>
             </a-descriptions-item>
             <a-descriptions-item :span="3" label="考试范围">
-              {{record.examScope}}
+              {{ record.examScope }}
             </a-descriptions-item>
             <a-descriptions-item label="备注">
-              {{record.remark}}
+              {{ record.remark }}
             </a-descriptions-item>
           </a-descriptions>
         </a-drawer>
@@ -475,6 +479,9 @@
         },
       }
     },
+    mounted() {
+      this.firstSubmit()
+    },
     methods: {
       // 省份选择监测
       handleChangePro(value) {
@@ -534,6 +541,7 @@
         this.visible = false
       },
       submitSearch() {
+        this.majorData.splice(0)
         this.searchContent.search = this.discipline.match(/(\d+)/g)[0]
         let url = 'http://127.0.0.1:8000/api/majors/?'
         // console.log(this.searchContent)
@@ -545,24 +553,31 @@
         let key = 1
         axios.get(url).then((res) => {
           // console.log(res.data)
-          res.data.forEach((item)=>{
+          res.data.forEach((item) => {
             const majData = {
-            key: key++,
-            schName: item.school.schName,
-            academy: item.institute,
-            major: item.major,
-            researchDir: item.resDirection,
-            leaMethod: item.learnForm,
-            remark:item.remark,
-            examForm:item.examForm,
-            examScope:item.examScope,
-            others: '考试范围、学制、学费等',
-            tags: [item.enrPlan],
-          }
-          majorData.push(majData)
+              key: key++,
+              schName: item.school.schName,
+              academy: item.institute,
+              major: item.major,
+              researchDir: item.resDirection,
+              leaMethod: item.learnForm,
+              remark: item.remark,
+              examForm: item.examForm,
+              examScope: item.examScope,
+              others: '考试范围、学制、学费等',
+              tags: [item.enrPlan],
+            }
+            majorData.push(majData)
           })
-          
         })
+      },
+      // 首次加载（从收藏跳转）
+      firstSubmit() {
+        if (this.$route.query.schName) {
+          this.majorData.splice(0)
+          this.searchContent.school__schName = this.$route.query.schName
+          this.submitSearch()
+        }
       },
     },
     computed: {

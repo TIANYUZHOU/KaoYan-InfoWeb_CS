@@ -450,14 +450,18 @@
                     localStorage.username = res.data.username
                     localStorage.avatar = res.data.avatar
                     localStorage.token = res.data.access
+                    localStorage.colId = res.data.colId
+                    console.log(res.data)
+                    localStorage.schIdList = res.data.schIdList
                     // this.$store.state.isLogin = true
                     this.addUserInfo(res.data)
                     this.changeLoginState(true)
                     this.handleOk() // 对话框原有方法触发
                   }
                 })
-                .catch(() => {
+                .catch((e) => {
                   // console.log(e.response.data)
+                  console.log(e)
                 })
             }
           } else {
