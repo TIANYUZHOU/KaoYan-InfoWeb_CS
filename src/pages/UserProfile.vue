@@ -70,13 +70,13 @@
               /></a-input>
             </a-descriptions-item>
             <a-descriptions-item label="上次登录">
-              {{ userProfile.last_login.split("T")[0] }}
+              {{ userProfile.last_login.split('T')[0] }}
             </a-descriptions-item>
             <a-descriptions-item label="加入时间">
-              {{ userProfile.date_joined.split("T")[0] }}
+              {{ userProfile.date_joined.split('T')[0] }}
             </a-descriptions-item>
             <a-descriptions-item label="上次编辑">
-              {{ userProfile.editTime.split("T")[0] }}
+              {{ userProfile.editTime.split('T')[0] }}
             </a-descriptions-item>
           </a-descriptions>
         </a-card>
@@ -109,6 +109,11 @@
         </a-card>
       </div>
     </div>
+    <div v-if="isModify" id="submit">
+      <a-button type="primary" style="width: 100%" @click="submit">
+        提交修改
+      </a-button>
+    </div>
     <div id="father2">
       <a-card
         :loading="loading"
@@ -139,11 +144,6 @@
           {{item.matName}}
         </p> -->
       </a-card>
-    </div>
-    <div v-if="isModify" id="submit">
-      <a-button type="primary" style="width: 100%" @click="submit">
-        提交修改
-      </a-button>
     </div>
   </div>
 </template>
@@ -313,13 +313,16 @@
       // 删除上传的资料
       deleteMaterial(matId) {
         let url = 'http://127.0.0.1:8000/api/materials/' + matId
-        axios.delete(url).then(()=>{
-          alert('删除成功！')
-          data.splice(0)
-          this.getUserProfile()
-        }).catch((e)=>{
-          console.log(e)
-        })
+        axios
+          .delete(url)
+          .then(() => {
+            alert('删除成功！')
+            data.splice(0)
+            this.getUserProfile()
+          })
+          .catch((e) => {
+            console.log(e)
+          })
       },
     },
   }
