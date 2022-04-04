@@ -15,7 +15,7 @@
         @click.native="changeNavId(3)"
         active-class="active"
         tag="button"
-        to="/majoys"
+        to="/majors"
         ><span>专业</span></router-link
       >
       <router-link

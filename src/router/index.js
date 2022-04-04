@@ -4,7 +4,7 @@ import Vue from 'vue'
 
 //引入 组件
 import Schools from '../pages/Schools'
-import Majoys from '../pages/Majoys'
+import Majoys from '../pages/Majors'
 import Subjects from '../pages/Subjects'
 import Materials from '../pages/Materials'
 import UserProfile from '../pages/UserProfile'
@@ -27,7 +27,7 @@ const router = new VueRouter({
       component: Schools
     },
     {
-      path: '/majoys',
+      path: '/majors',
       component: Majoys
     },
     {

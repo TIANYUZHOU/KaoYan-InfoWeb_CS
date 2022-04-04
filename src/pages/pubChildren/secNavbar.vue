@@ -19,7 +19,7 @@
       changeText() {
         if (this.$store.state.navbarId === 2) {
           this.title = '学校目录'
-          this.info = '根据【院校所在地区】及【院校标签】筛选'
+          this.info = '根据【院校所在地区】筛选'
         } else if (this.$store.state.navbarId === 3) {
           this.title = '专业目录'
           this.info = '根据【院校名称】及【招生专业】筛选'
