@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <div class="logo">
-      <img src="../../assets/nav_logo.png" alt="logo" />
+      <img src="../../assets/logo.png" alt="logo" />
     </div>
     <div class="button-left">
       <router-link
@@ -81,7 +81,7 @@
   }
   .button-left {
     float: left;
-    margin-left: 50px;
+    margin-left: 20px;
   }
   .button-left button {
     display: inline-block;

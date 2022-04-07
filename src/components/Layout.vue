@@ -5,21 +5,19 @@
         <Navbar />
       </el-header>
       <el-main>
-        <!-- <secNavbar /> -->
         <router-view></router-view>
-        <!-- <Schools /> -->
       </el-main>
-      <el-footer>Footer</el-footer>
+      <el-footer v-if="this.$store.state.navbarId !== 1">
+        <Footer />
+      </el-footer>
     </el-container>
   </div>
 </template>
 
 <script>
   import Navbar from './header/Navbar.vue'
-  // import Schools from '../pages/Schools.vue'
-  // import secNavbar from './main/secNavbar.vue'
   export default {
-    components: { Navbar, },
+    components: { Navbar },
     name: 'Layout',
     data() {
       return {}
