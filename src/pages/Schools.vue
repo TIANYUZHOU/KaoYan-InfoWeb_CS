@@ -549,12 +549,10 @@
       // 计算学校标签颜色
       tagColor(tag) {
         // console.log(tag)
-        if (tag === '一流大学A类') {
+        if (tag === '一流大学') {
           return 'volcano'
-        } else if (tag === '一流大学B类') {
-          return 'orange'
         } else if (tag === '一流学科') {
-          return 'green'
+          return 'pink'
         } else if (tag === '985') {
           return 'red'
         } else if (tag === '211') {
