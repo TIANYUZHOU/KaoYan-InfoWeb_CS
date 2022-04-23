@@ -41,8 +41,25 @@
                 type="primary"
                 shape="circle"
                 icon="solution"
+                @click="feedback"
               />
             </a-tooltip>
+            <a-modal
+              title="意见反馈"
+              :visible="feedbackVisible"
+              :confirm-loading="confirmLoading"
+              ok-text="提交"
+              cancel-text="取消"
+              @ok="handleOk"
+              @cancel="handleCancel"
+            >
+              <p><a-badge status="processing" />我要反馈：</p>
+              <a-textarea
+                v-model="feedbackText"
+                placeholder="请输入您的意见或建议......"
+                :auto-size="{ minRows: 3, maxRows: 5 }"
+              />
+            </a-modal>
           </div>
           <div>
             <a-tooltip>
@@ -52,6 +69,7 @@
                 type="primary"
                 shape="circle"
                 icon="idcard"
+                @click="info"
               />
             </a-tooltip>
           </div>
@@ -76,6 +94,11 @@
     data() {
       return {
         visible: false, // 头像气泡卡片配置
+
+        // 意见反馈配置
+        feedbackVisible: false,
+        confirmLoading: false,
+        feedbackText: '',
       }
     },
     methods: {
@@ -88,9 +111,36 @@
         // this.$store.state.isLogin = false
         this.changeLoginState(false)
       },
-      route(){
+      route() {
         this.$router.push('/userProfile')
-      }
+      },
+      // 意见反馈配置
+      feedback() {
+        this.feedbackVisible = true
+      },
+      handleOk(e) {
+        this.confirmLoading = true
+        setTimeout(() => {
+          this.feedbackVisible = false
+          this.confirmLoading = false
+        }, 2000)
+      },
+      handleCancel(e) {
+        this.feedbackVisible = false
+      },
+      // 关于
+      info() {
+        const h = this.$createElement
+        this.$info({
+          title: '此网站的相关信息',
+          okText: '知道了',
+          content: h('div', {}, [
+            h('p', '版本：1.0'),
+            h('p', '作者：TIANYUZHOU'),
+          ]),
+          onOk() {},
+        })
+      },
     },
   }
 </script>

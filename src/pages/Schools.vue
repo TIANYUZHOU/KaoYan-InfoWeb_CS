@@ -599,7 +599,8 @@
             // console.log(schoolData)
           })
           .catch((e) => {
-            console.log(e)
+            // console.log(e)
+            alert(e)
           })
       },
       // 首次加载

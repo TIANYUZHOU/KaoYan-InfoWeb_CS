@@ -411,7 +411,7 @@
                 .then(() => {
                   // console.log(res.data)
                   this.handleOk() // 对话框原有方法触发
-                  alert('提交成功!')
+                  alert('注册成功!')
                 })
                 .catch((e) => {
                   if (e.response.data.non_field_errors) {

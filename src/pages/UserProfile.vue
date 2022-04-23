@@ -471,7 +471,7 @@
 
 <style scoped>
   #father {
-    margin: 100px auto;
+    margin: 50px auto;
     margin-bottom: 0px;
     display: flex;
     width: 90%;
