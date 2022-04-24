@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <a-locale-provider :locale="zh_CN">
+    <a-config-provider :locale="zh_CN">
       <Layout />
-    </a-locale-provider>
+    </a-config-provider>
   </div>
 </template>
 
