@@ -7,6 +7,9 @@
       <el-main>
         <router-view></router-view>
       </el-main>
+      <!-- <el-footer v-if="this.$store.state.navbarId !== 1">
+        <Footer />
+      </el-footer> -->
       <el-footer v-if="this.$store.state.navbarId !== 1">
         <Footer />
       </el-footer>
@@ -15,9 +18,10 @@
 </template>
 
 <script>
-  import Navbar from './header/Navbar.vue'
+  import Navbar from './header/Navbar'
+  import Footer from './footer/Footer'
   export default {
-    components: { Navbar },
+    components: { Navbar, Footer },
     name: 'Layout',
     data() {
       return {}
