@@ -492,7 +492,7 @@
           yAxis: {
             name: '分数',
             type: 'value',
-            min: 100,
+            min: 0,
             max: 500,
           },
           series: [
