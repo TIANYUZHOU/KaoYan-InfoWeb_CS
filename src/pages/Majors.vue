@@ -146,7 +146,12 @@
               {{ record.schName }}
             </a-descriptions-item>
             <a-descriptions-item label="院系" :span="2">
-              {{ record.academy }}
+              <a-popover title="历年分数线" placement="bottom">
+                <template slot="content">
+                  <v-chart class="chart" :option="option" />
+                </template>
+                <a-button type="link"> {{ record.academy }} </a-button>
+              </a-popover>
             </a-descriptions-item>
             <a-descriptions-item label="专业">
               {{ record.major }}
@@ -477,6 +482,28 @@
           search: '', // 后的段 search 模糊查询 专业 字段
           learnForm: '',
         },
+
+        option: {
+          xAxis: {
+            name: '年份',
+            type: 'category',
+            data: ['2018', '2019', '2020', '2021', '2022'],
+          },
+          yAxis: {
+            name: '分数',
+            type: 'value',
+            min: 100,
+            max: 500,
+          },
+          series: [
+            {
+              data: [260, 290, 320, 347],
+              type: 'line',
+              smooth: true,
+              itemStyle: { normal: { label: { show: true } } },
+            },
+          ],
+        },
       }
     },
     mounted() {
@@ -528,8 +555,8 @@
         }
       },
       // 抽屉函数
-      afterVisibleChange(val) {
-        console.log('visible', val)
+      afterVisibleChange() {
+        // console.log('visible', val)
       },
       showDrawer(record) {
         // 获取数据记录（对象） 便于在详细描述中确定对应信息
@@ -607,5 +634,9 @@
   .majoyTable {
     margin-top: 30px;
     border: 1px solid #eceaea;
+  }
+  .chart {
+    height: 400px;
+    width: 400px;
   }
 </style>
