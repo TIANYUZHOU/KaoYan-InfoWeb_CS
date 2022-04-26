@@ -146,9 +146,9 @@
             <a-tag color="#f50">{{ record.size }} </a-tag>
           </span>
           <span slot="uploadTime" slot-scope="text, record">
-            <a-tag color="blue">{{ record.uploadTime.split("T")[0] }} </a-tag>
+            <a-tag color="blue">{{ record.uploadTime.split('T')[0] }} </a-tag>
           </span>
-          
+
           <!-- <span slot="type"> </span>
           <span slot="uploadTime"> </span>
           <span slot="uploadUser"> </span>
@@ -186,7 +186,7 @@
       key: 'matName',
       slots: { title: 'customTitle' },
       scopedSlots: { customRender: 'matName' },
-      width: 200
+      width: 200,
     },
     {
       title: '文件大小',
@@ -260,7 +260,7 @@
         searchContent: '',
       }
     },
-    mounted(){
+    mounted() {
       this.submitCheckBox()
     },
     methods: {
@@ -335,7 +335,7 @@
               }
             })
             .catch((e) => {
-              console.log(e)
+              alert(e)
             })
         })
 
@@ -347,7 +347,7 @@
         //   .catch((e) => {})
       },
       onSearch(value) {
-        if(value === ''){
+        if (value === '') {
           return
         }
         matData.splice(0)
@@ -384,7 +384,7 @@
             }
           })
           .catch((e) => {
-            console.log(e)
+            alert(e)
           })
       },
       // 上传资料对话框配置
@@ -418,8 +418,8 @@
         let url = 'http://127.0.0.1:8000/api/materials/'
         axios
           .post(url, formData)
-          .then((res) => {
-            console.log(res.data)
+          .then(() => {
+            // console.log(res.data)
             setTimeout(() => {
               this.visible = false
             }, 2000)
