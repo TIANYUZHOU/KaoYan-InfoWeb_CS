@@ -135,7 +135,7 @@
         ><a-drawer
           title="专业目录"
           placement="top"
-          height="60%"
+          height="80%"
           :closable="false"
           :visible="visible"
           :after-visible-change="afterVisibleChange"
@@ -149,7 +149,7 @@
               {{ record.academy }}
             </a-descriptions-item>
             <a-descriptions-item label="专业">
-              <a-popover title="历年录取分数线" placement="bottom">
+              <a-popover title="历年录取分数线" placement="bottomRight">
                 <template slot="content">
                   <v-chart class="chart" :option="getOption(record.admScore)" />
                 </template>
@@ -643,7 +643,7 @@
     border: 1px solid #eceaea;
   }
   .chart {
-    height: 400px;
+    height: 350px;
     width: 400px;
   }
 </style>
