@@ -19,7 +19,7 @@
           <a-card title="友情链接" :bordered="false">
             <ul>
               <li v-for="item in links" :key="item.id">
-                <a :href="item.url">{{ item.webTitle }}</a>
+                <a :href="item.url" target="blank">{{ item.webTitle }}</a>
               </li>
               <!-- <li><a href="https://yz.chsi.com.cn/"> 研招网</a></li>
               <li><a href="https://www.kaoyan.com/"> 考研帮</a></li>
@@ -68,7 +68,7 @@
           .get(url)
           .then((res) => {
             this.links = res.data
-            console.log(res.data)
+            // console.log(res.data)
           })
           .catch((e) => {
             alert(e)
