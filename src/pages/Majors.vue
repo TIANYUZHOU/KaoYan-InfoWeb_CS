@@ -146,15 +146,15 @@
               {{ record.schName }}
             </a-descriptions-item>
             <a-descriptions-item label="院系" :span="2">
-              <a-popover title="历年分数线" placement="bottom">
-                <template slot="content">
-                  <v-chart class="chart" :option="option" />
-                </template>
-                <a-button type="link"> {{ record.academy }} </a-button>
-              </a-popover>
+              {{ record.academy }}
             </a-descriptions-item>
             <a-descriptions-item label="专业">
-              {{ record.major }}
+              <a-popover title="历年录取分数线" placement="bottom">
+                <template slot="content">
+                  <v-chart class="chart" :option="getOption(record.admScore)" />
+                </template>
+                <a-button type="link" style="padding: 0px"> {{ record.major }} </a-button>
+              </a-popover>
             </a-descriptions-item>
             <a-descriptions-item label="研究方向" :span="2">
               {{ record.researchDir }}
@@ -482,28 +482,6 @@
           search: '', // 后的段 search 模糊查询 专业 字段
           learnForm: '',
         },
-
-        option: {
-          xAxis: {
-            name: '年份',
-            type: 'category',
-            data: ['2018', '2019', '2020', '2021', '2022'],
-          },
-          yAxis: {
-            name: '分数',
-            type: 'value',
-            min: 0,
-            max: 500,
-          },
-          series: [
-            {
-              data: [260, 290, 320, 347],
-              type: 'line',
-              smooth: true,
-              itemStyle: { normal: { label: { show: true } } },
-            },
-          ],
-        },
       }
     },
     mounted() {
@@ -593,6 +571,7 @@
               examScope: item.examScope,
               others: '考试范围、学制、学费等',
               tags: [item.enrPlan],
+              admScore: item.admScore,
             }
             majorData.push(majData)
           })
@@ -605,6 +584,34 @@
           this.searchContent.school__schName = this.$route.query.schName
           this.submitSearch()
         }
+      },
+      // 获取 echarts option数据
+      getOption(admScore) {
+        let data = admScore?.split('|') ?? [0, 0, 0, 0, 0]
+        // console.log(admScore)
+        let myoption = {
+          xAxis: {
+            name: '年份',
+            type: 'category',
+            data: ['2018', '2019', '2020', '2021', '2022'],
+          },
+          yAxis: {
+            name: '分数线',
+            type: 'value',
+            min: 0,
+            max: 500,
+          },
+          series: [
+            {
+              // data: [260, 290, 320, 347,0],
+              data,
+              type: 'line',
+              smooth: true,
+              label: { show: true },
+            },
+          ],
+        }
+        return myoption
       },
     },
     computed: {
