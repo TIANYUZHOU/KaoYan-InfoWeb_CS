@@ -93,10 +93,10 @@
               </a>
               <a-menu slot="overlay">
                 <a-menu-item>
-                  <a @click="routeTo(1)">按学校筛选</a>
+                  <a @click="routeTo(2)">按学校筛选</a>
                 </a-menu-item>
                 <a-menu-item>
-                  <a @click="routeTo(2)">按专业筛选</a>
+                  <a @click="routeTo(3)">按专业筛选</a>
                 </a-menu-item>
               </a-menu>
             </a-dropdown></a
@@ -106,13 +106,11 @@
       <div class="shcoolTable">
         <a-table :columns="columns" :data-source="schoolData">
           <a
-              slot="schName"
-              slot-scope="text"
-              @click="
-                $router.push({ path: '/majors', query: { schName: text } })
-              "
-              >{{ text }}</a
-            >
+            slot="schName"
+            slot-scope="text"
+            @click="$router.push({ path: '/majors', query: { schName: text } })"
+            >{{ text }}</a
+          >
           <span slot="customTitle"><a-icon type="fire" />院校名称</span>
           <span slot="tags" slot-scope="tags">
             <a-tag v-for="tag in tags" :key="tag" :color="tagColor(tag)">
@@ -232,12 +230,15 @@
     methods: {
       // 卡片下拉栏路由
       routeTo(id) {
-        if (id === 1) {
+        if (id === 2) {
           this.$router.push('/schools')
-        } else if (id === 2) {
-          this.$router.push('/majoys')
+          this.$store.commit('ChangeNavId', id)
         } else if (id === 3) {
+          this.$router.push('/majors')
+          this.$store.commit('ChangeNavId', id)
+        } else if (id === 4) {
           this.$router.push('/subjects')
+          this.$store.commit('ChangeNavId', id)
           // console.log(id)
         }
       },
@@ -340,7 +341,7 @@
               // console.log(schoolData)
             })
             .catch((e) => {
-              console.log(e)
+              alert(e)
             })
         }
       },
@@ -364,7 +365,7 @@
             user: user_id,
             school: this.schIdList,
           }
-          console.log(parameter)
+          // console.log(parameter)
           axios
             .put(url, parameter) // 为啥用 PUT 而不是 DELETE？ ：这里删除后端其实用的是 update方法
             .then(() => {
@@ -373,7 +374,7 @@
               alert('添加收藏成功！')
             })
             .catch((e) => {
-              console.log(e)
+              alert(e)
             })
         }
       },

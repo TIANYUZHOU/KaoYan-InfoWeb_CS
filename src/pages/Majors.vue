@@ -11,10 +11,10 @@
               </a>
               <a-menu slot="overlay">
                 <a-menu-item>
-                  <a @click="routeTo(1)">按学校筛选</a>
+                  <a @click="routeTo(2)">按学校筛选</a>
                 </a-menu-item>
                 <a-menu-item>
-                  <a @click="routeTo(3)">按科目筛选</a>
+                  <a @click="routeTo(4)">按科目筛选</a>
                 </a-menu-item>
               </a-menu>
             </a-dropdown></a
@@ -506,12 +506,15 @@
       },
       // 卡片下拉栏路由
       routeTo(id) {
-        if (id === 1) {
+        if (id === 2) {
           this.$router.push('/schools')
-        } else if (id === 2) {
-          this.$router.push('/majoys')
+          this.$store.commit('ChangeNavId', id)
         } else if (id === 3) {
+          this.$router.push('/majoys')
+          this.$store.commit('ChangeNavId', id)
+        } else if (id === 4) {
           this.$router.push('/subjects')
+          this.$store.commit('ChangeNavId', id)
           // console.log(id)
         }
       },

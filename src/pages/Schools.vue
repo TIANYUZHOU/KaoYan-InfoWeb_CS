@@ -23,10 +23,10 @@
               </a>
               <a-menu slot="overlay">
                 <a-menu-item>
-                  <a @click="routeTo(2)">按专业筛选</a>
+                  <a @click="routeTo(3)">按专业筛选</a>
                 </a-menu-item>
                 <a-menu-item>
-                  <a @click="routeTo(3)">按科目筛选</a>
+                  <a @click="routeTo(4)">按科目筛选</a>
                 </a-menu-item>
               </a-menu>
             </a-dropdown></a
@@ -47,7 +47,7 @@
             </p>
             <!-- 省市卡片列表 -->
             <a-list :grid="{ gutter: 16, column: 12 }" :data-source="proData">
-              <a-list-item slot="renderItem" slot-scope="item, index">
+              <a-list-item slot="renderItem" slot-scope="item">
                 <!-- <a-card :title="item.title">
                   {{ index + 1 + ' ' + item.title }} 内容</a-card
                 > -->
@@ -483,19 +483,22 @@
       },
       // 卡片下拉栏路由
       routeTo(id) {
-        if (id === 1) {
+        if (id === 2) {
           this.$router.push('/schools')
-        } else if (id === 2) {
-          this.$router.push('/majoys')
+          this.$store.commit('ChangeNavId', id)
         } else if (id === 3) {
+          this.$router.push('/majors')
+          this.$store.commit('ChangeNavId', id)
+        } else if (id === 4) {
           this.$router.push('/subjects')
+          this.$store.commit('ChangeNavId', id)
           // console.log(id)
         }
       },
 
       // 多选框检测函数
-      onChange(checkedValues) {
-        console.log('checked = ', checkedValues)
+      onChange() {
+        // console.log('checked = ', checkedValues)
       },
       // 筛取对应大区域划分下，所属的省市，港澳台除外
       getProList() {
@@ -625,7 +628,7 @@
             user: user_id,
             school: this.schIdList,
           }
-          console.log(parameter)
+          // console.log(parameter)
           axios
             .put(url, parameter) // 为啥用 PUT 而不是 DELETE？ ：这里删除后端其实用的是 update方法
             .then(() => {
@@ -634,7 +637,7 @@
               alert('添加收藏成功！')
             })
             .catch((e) => {
-              console.log(e)
+              alert(e)
             })
         }
       },
