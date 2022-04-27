@@ -149,11 +149,13 @@
               {{ record.academy }}
             </a-descriptions-item>
             <a-descriptions-item label="专业">
-              <a-popover title="历年录取分数线" placement="bottomRight">
+              <a-popover title="历年复试分数线" placement="bottomRight">
                 <template slot="content">
                   <v-chart class="chart" :option="getOption(record.admScore)" />
                 </template>
-                <a-button type="link" style="padding: 0px"> {{ record.major }} </a-button>
+                <a-button type="link" style="padding: 0px">
+                  {{ record.major }}
+                </a-button>
               </a-popover>
             </a-descriptions-item>
             <a-descriptions-item label="研究方向" :span="2">
