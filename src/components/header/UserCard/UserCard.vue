@@ -15,6 +15,7 @@
                 type="primary"
                 shape="circle"
                 icon="star"
+                @click="route"
               />
             </a-tooltip>
           </div>
