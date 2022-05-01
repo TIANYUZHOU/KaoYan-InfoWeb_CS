@@ -35,7 +35,7 @@
               v-bind="layout"
             >
               <a-form-model-item has-feedback label="用户名" prop="name">
-                <a-input v-model="ruleForm.name" placeholder="请输入用户名"
+                <a-input v-model="ruleForm.name" placeholder="请输入用户名（4-16个字符）"
                   ><a-icon
                     slot="prefix"
                     type="user"
@@ -216,8 +216,9 @@
     data() {
       // 表单配置
       let validatePass = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入密码'))
+        let userPassPattern = /\S{6,}/
+        if (!userPassPattern.test(value)) {
+          callback(new Error('请输入6位以上的密码'))
         } else {
           if (this.ruleForm.checkPass !== '') {
             this.$refs.ruleForm.validateField('checkPass')
@@ -235,8 +236,9 @@
         }
       }
       let validateName = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入用户名'))
+        let userNamePattern = /^[a-zA-Z0-9_\-.@]{4,16}$/
+        if (!userNamePattern.test(value)) {
+          callback(new Error('请输入正确的用户名'))
         } else {
           callback()
         }
