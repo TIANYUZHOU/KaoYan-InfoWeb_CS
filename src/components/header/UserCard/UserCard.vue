@@ -90,6 +90,7 @@
 </template>
 
 <script>
+  import axios from 'axios'
   export default {
     name: 'UserCard',
     data() {
@@ -121,6 +122,18 @@
       },
       handleOk(e) {
         this.confirmLoading = true
+        if (this.feedbackText !== '') {
+          const parameter = {
+            content: this.feedbackText,
+            user: this.$store.state.userInfo.user_id,
+          }
+          let url = 'http://127.0.0.1:8000/api/feedback/'
+          axios.post(url, parameter).then((res) => {
+            alert('感谢您的反馈!!\n------------------------------\n' + res.data.content)
+          })
+        } else {
+          alert('请先输入内容再提交!')
+        }
         setTimeout(() => {
           this.feedbackVisible = false
           this.confirmLoading = false
