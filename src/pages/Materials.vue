@@ -389,6 +389,10 @@
       },
       // 上传资料对话框配置
       showModal() {
+        if(!this.$store.state.userInfo.user_id){
+            alert('请先登录再执行此操作!')
+            return
+          }
         this.visible = true
       },
       handleCancel() {

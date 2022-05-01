@@ -611,6 +611,10 @@
       // 收藏
       addCollectItem(schId) {
         {
+          if(!this.$store.state.userInfo.user_id){
+            alert('请先登录再执行此操作!')
+            return
+          }
           let user_id = this.$store.state.userInfo.user_id
           let colId = this.$store.state.userInfo.colId
           let url = 'http://127.0.0.1:8000/api/collect/' + colId + '/'
