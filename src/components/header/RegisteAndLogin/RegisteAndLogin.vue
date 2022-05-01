@@ -238,7 +238,7 @@
       let validateName = (rule, value, callback) => {
         let userNamePattern = /^[a-zA-Z0-9_\-.@]{4,16}$/
         if (!userNamePattern.test(value)) {
-          callback(new Error('请输入正确的用户名'))
+          callback(new Error(`请输入正确的用户名（可包含：英文字母、数字、'-'、'_'、'@'、'.'）`))
         } else {
           callback()
         }
