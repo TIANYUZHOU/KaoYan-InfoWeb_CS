@@ -120,7 +120,7 @@
       feedback() {
         this.feedbackVisible = true
       },
-      handleOk(e) {
+      handleOk() {
         this.confirmLoading = true
         if (this.feedbackText !== '') {
           const parameter = {
@@ -139,7 +139,7 @@
           this.confirmLoading = false
         }, 2000)
       },
-      handleCancel(e) {
+      handleCancel() {
         this.feedbackVisible = false
       },
       // 关于
