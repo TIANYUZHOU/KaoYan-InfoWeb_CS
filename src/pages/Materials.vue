@@ -160,7 +160,7 @@
 </template>
 
 <script>
-  import axios from 'axios'
+  import myAxios from '@/utils/axios'
   // 导入标题卡片导航
   import secNavbar from './pubChildren/secNavbar.vue'
   // 多选框参数
@@ -307,7 +307,7 @@
         }
         let key = 1
         url.forEach((value) => {
-          axios
+          myAxios
             .get(value)
             .then((res) => {
               if (res.data.results.length !== 0) {
@@ -353,7 +353,7 @@
         matData.splice(0)
         let url = 'http://127.0.0.1:8000/api/materialInfo/?search=' + value
         let key = 1
-        axios
+        myAxios
           .get(url)
           .then((res) => {
             {
@@ -389,10 +389,11 @@
       },
       // 上传资料对话框配置
       showModal() {
-        if(!this.$store.state.userInfo.user_id){
-            alert('请先登录再执行此操作!')
-            return
-          }
+        if (!this.$store.state.userInfo.token) {
+          alert('请先登录再执行此操作!')
+          this.$router.push('/')
+          return
+        }
         this.visible = true
       },
       handleCancel() {
@@ -420,7 +421,7 @@
           formData.append('description', this.description)
         })
         let url = 'http://127.0.0.1:8000/api/materials/'
-        axios
+        myAxios
           .post(url, formData)
           .then(() => {
             // console.log(res.data)

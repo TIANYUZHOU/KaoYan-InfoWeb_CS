@@ -179,7 +179,7 @@
 </template>
 
 <script>
-  import axios from 'axios'
+  import myAxios from '@/utils/axios'
   // 上传文件列表数据
   const data = []
   // 学校表格
@@ -272,7 +272,7 @@
         }
         let url = 'http://127.0.0.1:8000/userprofile/' + user_id + '/'
         let key = 1
-        axios
+        myAxios
           .get(url)
           .then((res) => {
             // console.log(res.data.colUser.school)
@@ -398,7 +398,7 @@
           return
         }
         let url = 'http://127.0.0.1:8000/usermodify/' + user_id + '/'
-        axios.put(url, userInfoFormData).then((res) => {
+        myAxios.put(url, userInfoFormData).then((res) => {
           // console.log(res.data)
           this.$store.commit('AddUserInfo', res.data)
           this.avatar = res.data.avatar
@@ -410,7 +410,7 @@
       // 删除上传的资料
       deleteMaterial(matId) {
         let url = 'http://127.0.0.1:8000/api/materials/' + matId
-        axios
+        myAxios
           .delete(url)
           .then(() => {
             alert('删除成功！')
@@ -450,8 +450,8 @@
           user: user_id,
           school: this.schIdList,
         }
-        console.log(parameter)
-        axios
+        // console.log(parameter)
+        myAxios
           .put(url, parameter) // 为啥用 PUT 而不是 DELETE？ ：这里删除后端其实用的是 update方法
           .then(() => {
             alert('删除成功！')

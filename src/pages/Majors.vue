@@ -190,7 +190,7 @@
 </template>
 
 <script>
-  import axios from 'axios'
+  import myAxios from '@/utils/axios'
   const Categories = ['工学', '理学', '专业学位']
   const Disciplines = {
     理学: ['（0775）计算机科学与技术'],
@@ -200,7 +200,7 @@
       '（0839）网络空间安全',
       '（0828Z）农业信息工程类',
     ],
-    专业学位: ['（0854）电子信息','(095136)农业工程与信息技术'],
+    专业学位: ['（0854）电子信息', '(095136)农业工程与信息技术'],
   }
   // 筛选后学校表格
   const columns = [
@@ -562,26 +562,36 @@
         url = url.slice(0, -1)
         // console.log(url)
         let key = 1
-        axios.get(url).then((res) => {
-          // console.log(res.data)
-          res.data.forEach((item) => {
-            const majData = {
-              key: key++,
-              schName: item.school.schName,
-              academy: item.institute,
-              major: item.major,
-              researchDir: item.resDirection,
-              leaMethod: item.learnForm,
-              remark: item.remark,
-              examForm: item.examForm,
-              examScope: item.examScope,
-              others: '考试范围、学制、学费等',
-              tags: [item.enrPlan],
-              admScore: item.admScore,
-            }
-            majorData.push(majData)
+        myAxios
+          .get(url)
+          .then((res) => {
+            // console.log(res.data)
+            res.data.forEach((item) => {
+              const majData = {
+                key: key++,
+                schName: item.school.schName,
+                academy: item.institute,
+                major: item.major,
+                researchDir: item.resDirection,
+                leaMethod: item.learnForm,
+                remark: item.remark,
+                examForm: item.examForm,
+                examScope: item.examScope,
+                others: '考试范围、学制、学费等',
+                tags: [item.enrPlan],
+                admScore: item.admScore,
+              }
+              majorData.push(majData)
+            })
           })
-        })
+          .catch((e) => {
+            if (e.response.status === 401) {
+              alert('请先登录！')
+              this.$router.push('/')
+            } else {
+              alert(e)
+            }
+          })
       },
       // 首次加载（从收藏跳转）
       firstSubmit() {

@@ -112,6 +112,8 @@
         window.localStorage.clear()
         // this.$store.state.isLogin = false
         this.changeLoginState(false)
+        this.$router.push('/')
+        this.$store.state.userInfo.token = ''
       },
       route() {
         this.$router.push('/userProfile')
@@ -129,7 +131,10 @@
           }
           let url = 'http://127.0.0.1:8000/api/feedback/'
           axios.post(url, parameter).then((res) => {
-            alert('感谢您的反馈!!\n------------------------------\n' + res.data.content)
+            alert(
+              '感谢您的反馈!!\n------------------------------\n' +
+                res.data.content
+            )
           })
         } else {
           alert('请先输入内容再提交!')

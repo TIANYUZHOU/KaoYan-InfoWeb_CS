@@ -66,13 +66,11 @@
       <div class="shcoolTable">
         <a-table :columns="columns" :data-source="schoolData">
           <a
-              slot="schName"
-              slot-scope="text"
-              @click="
-                $router.push({ path: '/majors', query: { schName: text } })
-              "
-              >{{ text }}</a
-            >
+            slot="schName"
+            slot-scope="text"
+            @click="$router.push({ path: '/majors', query: { schName: text } })"
+            >{{ text }}</a
+          >
           <span slot="customTitle"><a-icon type="fire" />院校名称</span>
           <span slot="tags" slot-scope="tags">
             <a-tag v-for="tag in tags" :key="tag" :color="tagColor(tag)">
@@ -93,7 +91,7 @@
 </template>
 
 <script>
-  import axios from 'axios'
+  import myAxios from '@/utils/axios'
   // 导入标题卡片导航
   import secNavbar from './pubChildren/secNavbar.vue'
   // 省市卡片数据
@@ -449,7 +447,7 @@
         customStyle:
           'background: #fafafa; border-top: 1px solid #eceaea;border-left: 0px;border-right: 0px;',
         // 学校id
-        schIdList: this.$store.state.userInfo.schIdList
+        schIdList: this.$store.state.userInfo.schIdList,
       }
     },
     computed: {
@@ -570,7 +568,7 @@
         // console.log(province)
         let url = 'http://127.0.0.1:8000/api/schools/?location=' + province
         let key = 1
-        axios
+        myAxios
           .get(url)
           .then((res) => {
             // console.log(res.data)
@@ -601,7 +599,12 @@
           })
           .catch((e) => {
             // console.log(e)
-            alert(e)
+            if (e.response.status === 401) {
+              alert('请先登录！')
+              this.$router.push('/')
+            } else {
+              alert(e)
+            }
           })
       },
       // 首次加载
@@ -611,7 +614,7 @@
       // 收藏
       addCollectItem(schId) {
         {
-          if(!this.$store.state.userInfo.user_id){
+          if (!this.$store.state.userInfo.user_id) {
             alert('请先登录再执行此操作!')
             return
           }
@@ -633,7 +636,7 @@
             school: this.schIdList,
           }
           // console.log(parameter)
-          axios
+          myAxios
             .put(url, parameter) // 为啥用 PUT 而不是 DELETE？ ：这里删除后端其实用的是 update方法
             .then(() => {
               localStorage.schIdList = this.schIdList
@@ -641,7 +644,12 @@
               alert('添加收藏成功！')
             })
             .catch((e) => {
-              alert(e)
+              if (e.response.status === 401) {
+                alert('请先登录！')
+                this.$router.push('/')
+              } else {
+                alert(e)
+              }
             })
         }
       },

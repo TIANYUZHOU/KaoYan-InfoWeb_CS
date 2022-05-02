@@ -131,7 +131,7 @@
 </template>
 
 <script>
-  import axios from 'axios'
+  import myAxios from '@/utils/axios'
   // 导入标题卡片导航
   import secNavbar from './pubChildren/secNavbar.vue'
   // 筛选后学校表格
@@ -311,7 +311,7 @@
             schPropertyParameter
           // console.log(url)
           let key = 1
-          axios
+          myAxios
             .get(url)
             .then((res) => {
               // console.log(res.data)
@@ -341,14 +341,19 @@
               // console.log(schoolData)
             })
             .catch((e) => {
-              alert(e)
+              if (e.response.status === 401) {
+                alert('请先登录！')
+                this.$router.push('/')
+              } else {
+                alert(e)
+              }
             })
         }
       },
       // 收藏
       addCollectItem(schId) {
         {
-          if(!this.$store.state.userInfo.user_id){
+          if (!this.$store.state.userInfo.user_id) {
             alert('请先登录再执行此操作!')
             return
           }
@@ -370,7 +375,7 @@
             school: this.schIdList,
           }
           // console.log(parameter)
-          axios
+          myAxios
             .put(url, parameter) // 为啥用 PUT 而不是 DELETE？ ：这里删除后端其实用的是 update方法
             .then(() => {
               localStorage.schIdList = this.schIdList
@@ -378,7 +383,12 @@
               alert('添加收藏成功！')
             })
             .catch((e) => {
-              alert(e)
+              if (e.response.status === 401) {
+                alert('请先登录！')
+                this.$router.push('/')
+              } else {
+                alert(e)
+              }
             })
         }
       },

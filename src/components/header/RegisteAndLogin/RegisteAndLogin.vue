@@ -35,7 +35,9 @@
               v-bind="layout"
             >
               <a-form-model-item has-feedback label="用户名" prop="name">
-                <a-input v-model="ruleForm.name" placeholder="请输入用户名（4-16个字符）"
+                <a-input
+                  v-model="ruleForm.name"
+                  placeholder="请输入用户名（4-16个字符）"
                   ><a-icon
                     slot="prefix"
                     type="user"
@@ -238,7 +240,11 @@
       let validateName = (rule, value, callback) => {
         let userNamePattern = /^[a-zA-Z0-9_\-.@]{4,16}$/
         if (!userNamePattern.test(value)) {
-          callback(new Error(`请输入正确的用户名（可包含：英文字母、数字、'-'、'_'、'@'、'.'）`))
+          callback(
+            new Error(
+              `请输入正确的用户名（可包含：英文字母、数字、'-'、'_'、'@'、'.'）`
+            )
+          )
         } else {
           callback()
         }
@@ -377,6 +383,7 @@
           this.visible = false
           this.loading = false
         }, 2000)
+        this.$router.push('/schools')
       },
       handleCancel() {
         // console.log('点击取消按钮')
