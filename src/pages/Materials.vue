@@ -391,6 +391,7 @@
       showModal() {
         if (!this.$store.state.userInfo.token) {
           alert('请先登录再执行此操作!')
+          this.$store.state.navbarId = 1
           this.$router.push('/')
           return
         }

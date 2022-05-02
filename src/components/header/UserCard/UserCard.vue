@@ -113,6 +113,7 @@
         // this.$store.state.isLogin = false
         this.changeLoginState(false)
         this.$router.push('/')
+        this.$store.state.navbarId = 1
         this.$store.state.userInfo.token = ''
       },
       route() {

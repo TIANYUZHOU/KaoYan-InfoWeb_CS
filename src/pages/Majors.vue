@@ -587,6 +587,7 @@
           .catch((e) => {
             if (e.response.status === 401) {
               alert('请先登录！')
+              this.$store.state.navbarId = 1
               this.$router.push('/')
             } else {
               alert(e)
