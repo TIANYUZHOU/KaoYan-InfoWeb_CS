@@ -14,6 +14,7 @@ import store from './store'
 import router from './router';
 
 Vue.config.productionTip = false
+
 // 使用emui组件库
 Vue.use(ElementUI);
 Vue.use(Antd);
