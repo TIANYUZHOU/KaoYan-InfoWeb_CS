@@ -42,7 +42,7 @@
 #### 克隆代码仓库
 
 ```shell
-git clone https://github.com/TIANYUZHOU/KaoYan-InfoWeb_CS
+git clone https://github.com/TIANYUZHOU/KaoYan-InfoWeb_CS.git
 ```
 
 #### 安装依赖
