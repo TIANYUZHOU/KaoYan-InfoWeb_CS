@@ -51,12 +51,6 @@ git clone https://github.com/TIANYUZHOU/KaoYan-InfoWeb_CS
 npm install
 ```
 
-#### 启动项目
-
-```shell
-python manage.py runserver
-```
-
 #### 编译并启动
 
 ```shell
