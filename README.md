@@ -12,13 +12,13 @@
 ### 用户端
 
 - 主界面
-![主界面](https://pic.zty.plus/%E6%AF%95%E8%AE%BE%E5%BC%80%E6%BA%90%E5%9B%BE/%E4%B8%BB%E7%95%8C%E9%9D%A2.png)
+![主界面](https://pic.ztyzhou.com/%E6%AF%95%E8%AE%BE%E5%BC%80%E6%BA%90%E5%9B%BE/%E4%B8%BB%E7%95%8C%E9%9D%A2.png)
 - 地区院校查询
-![主界面](https://pic.zty.plus/%E6%AF%95%E8%AE%BE%E5%BC%80%E6%BA%90%E5%9B%BE/%E5%9C%B0%E5%8C%BA-%E9%99%A2%E6%A0%A1%E6%9F%A5%E8%AF%A2.png)
+![主界面](https://pic.ztyzhou.com/%E6%AF%95%E8%AE%BE%E5%BC%80%E6%BA%90%E5%9B%BE/%E5%9C%B0%E5%8C%BA-%E9%99%A2%E6%A0%A1%E6%9F%A5%E8%AF%A2.png)
 - 科目院校查询
-![详细信息](https://pic.zty.plus/%E6%AF%95%E8%AE%BE%E5%BC%80%E6%BA%90%E5%9B%BE/%E8%AF%A6%E7%BB%86%E4%BF%A1%E6%81%AF.png)
+![详细信息](https://pic.ztyzhou.com/%E6%AF%95%E8%AE%BE%E5%BC%80%E6%BA%90%E5%9B%BE/%E8%AF%A6%E7%BB%86%E4%BF%A1%E6%81%AF.png)
 - 资料分享
-![资料分享](https://pic.zty.plus/%E6%AF%95%E8%AE%BE%E5%BC%80%E6%BA%90%E5%9B%BE/%E8%B5%84%E6%96%99%E5%88%86%E4%BA%AB.png)
+![资料分享](https://pic.ztyzhou.com/%E6%AF%95%E8%AE%BE%E5%BC%80%E6%BA%90%E5%9B%BE/%E8%B5%84%E6%96%99%E5%88%86%E4%BA%AB.png)
 
 ### 更多演示
 
